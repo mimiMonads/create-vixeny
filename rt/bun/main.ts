@@ -1,9 +1,5 @@
 import { vixeny, wrap } from "vixeny";
-import {  staticServerPlugings } from "vixeny-prespective"; // Importing the plugin options
-
-//ddd
-
-// Example of setting up a Vixeny app with Pug template rendering in Bun in http://localhost:3000/ 
+import {  staticServerPlugings } from "vixeny-prespective"; 
 
 Bun.serve({
   fetch: vixeny({

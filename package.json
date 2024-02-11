@@ -24,10 +24,6 @@
   },
   "homepage": "https://github.com/mimiMonads/create-vixeny#readme",
   "dependencies": {
-    "vixeny": "^0.0.918",
-    "vixeny-prespective": "^0.0.5"
-  },
-  "devDependencies": {
-    "chokidar": "^3.6.0"
+    "inquirer": "^9.2.14"
   }
 }
