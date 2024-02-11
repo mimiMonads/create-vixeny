@@ -1,0 +1,33 @@
+{
+  "name": "create-vixeny",
+  "version": "0.0.2",
+  "description": "templates for Vixeny",
+  "main": "main.ts",
+  "scripts": {
+    "start": "bun run main.ts",
+    "dev": "bun run watcher.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mimiMonads/create-vixeny.git"
+  },
+  "keywords": [
+    "templates",
+    "functional",
+    "bun",
+    "deno"
+  ],
+  "author": "mimi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mimiMonads/create-vixeny/issues"
+  },
+  "homepage": "https://github.com/mimiMonads/create-vixeny#readme",
+  "dependencies": {
+    "vixeny": "^0.0.918",
+    "vixeny-prespective": "^0.0.5"
+  },
+  "devDependencies": {
+    "chokidar": "^3.6.0"
+  }
+}

@@ -1,0 +1,7 @@
+mixin link(label, href)
+  a(href=href) #{label}
+
+header
+  nav
+    +link('Home', '/public/main.pug')
+    +link('Docs', '/public/docs.pug')
