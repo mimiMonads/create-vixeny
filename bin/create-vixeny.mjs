@@ -75,7 +75,7 @@ inquirer.prompt(questions).then((answers) => {
       packageJson.dependencies = {
         ...packageJson.dependencies,
         "vixeny": "latest", // Assuming you want the latest version
-        "vixeny-perspective": "latest", // Adjust version as necessary
+        "vixeny-prespective": "latest", // Adjust version as necessary
       };
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
