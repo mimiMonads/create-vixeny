@@ -100,7 +100,7 @@ inquirer.prompt(questions).then((answers) => {
 });
 
 function copyTemplateFiles(templateName, projectPath) {
-  const templatePath = path.join(__dirname, templateName);
+  const templatePath = path.join(__dirname, '..' ,templateName);
 
   function copyRecursively(sourcePath, targetPath) {
     // Check if the source is a directory or file
