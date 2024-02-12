@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import inquirer from "inquirer";
 import { exec } from "node:child_process";
 import fs from "fs";

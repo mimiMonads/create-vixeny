@@ -1,6 +1,6 @@
 {
   "name": "create-vixeny",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "templates for Vixeny",
   "main": "main.ts",
   "repository": {
@@ -14,7 +14,7 @@
     "deno"
   ],
   "bin": {
-    "create-vixeny": "./cli.mjs"
+    "create-vixeny":"./bin/create-vixeny.mjs"
   },  
   "author": "mimi",
   "license": "ISC",
