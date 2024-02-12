@@ -3,7 +3,7 @@ import inquirer from "inquirer";
 import { exec } from "node:child_process";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +18,7 @@ const questions = [
   {
     type: "list",
     name: "runtime",
-    message: "Which runtime would you like?",
+    message: "Which runtime would you prefer?",
     choices: ["bun"],
   },
   {
@@ -38,7 +38,6 @@ const questions = [
     },
   },
 ];
-
 
 inquirer.prompt(questions).then((answers) => {
   // Your previous answers handling here
@@ -62,7 +61,7 @@ inquirer.prompt(questions).then((answers) => {
     console.log("Project initialized successfully.");
 
     const packageJsonPath = path.join(projectPath, "package.json");
-    fs.readFile(packageJsonPath, "utf8",  (err, data) => {
+    fs.readFile(packageJsonPath, "utf8", (err, data) => {
       if (err) return console.error(`Failed to read package.json: ${err}`);
 
       const packageJson = JSON.parse(data);
@@ -92,15 +91,15 @@ inquirer.prompt(questions).then((answers) => {
           if (err) return console.error(`Failed to write package.json: ${err}`);
         },
       );
-       copyTemplateFiles( 'templates/' + answers.installationChoice, projectPath);
-       copyTemplateFiles( 'rt/' + answers.runtime, projectPath);
+      copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
+      copyTemplateFiles("rt/" + answers.runtime, projectPath);
       console.log("have fun");
     });
   });
 });
 
 function copyTemplateFiles(templateName, projectPath) {
-  const templatePath = path.join(__dirname, '..' ,templateName);
+  const templatePath = path.join(__dirname, "..", templateName);
 
   function copyRecursively(sourcePath, targetPath) {
     // Check if the source is a directory or file
@@ -128,6 +127,6 @@ function copyTemplateFiles(templateName, projectPath) {
   try {
     copyRecursively(templatePath, projectPath);
   } catch (error) {
-    console.error('Error copying template files:', error);
+    console.error("Error copying template files:", error);
   }
 }

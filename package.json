@@ -14,8 +14,8 @@
     "deno"
   ],
   "bin": {
-    "create-vixeny":"./bin/create-vixeny.mjs"
-  },  
+    "create-vixeny": "./bin/create-vixeny.mjs"
+  },
   "author": "mimi",
   "license": "ISC",
   "bugs": {
