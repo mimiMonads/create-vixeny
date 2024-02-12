@@ -1,12 +1,8 @@
 {
   "name": "create-vixeny",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "templates for Vixeny",
   "main": "main.ts",
-  "scripts": {
-    "start": "bun run main.ts",
-    "dev": "bun run watcher.mjs"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mimiMonads/create-vixeny.git"
@@ -17,6 +13,9 @@
     "bun",
     "deno"
   ],
+  "bin": {
+    "create-vixeny": "./cli.mjs"
+  },  
   "author": "mimi",
   "license": "ISC",
   "bugs": {

@@ -1,13 +1,13 @@
 import { vixeny, wrap } from "vixeny";
-import {  staticServerPlugings } from "vixeny-prespective"; 
+import { staticServerPlugings } from "vixeny-prespective";
 
 Bun.serve({
   fetch: vixeny({
-    enableLiveReloading: true
+    enableLiveReloading: true,
   })([
     {
-        path: '/',
-        f: () => 'hello world'
+      path: "/",
+      f: () => "hello world",
     },
     //with static server
     {
