@@ -6,13 +6,7 @@ const path = globalOptions.hasName;
 export default wrap(globalOptions)()
   .customPetition({
     path: "/",
-    f: () =>
-      new Response(null, {
-        status: 302,
-        headers: {
-          "Location": path + "public/html/main.html",
-        },
-      }),
+    f: () => new Response('Hello world!'),
   })
   .stdPetition({
     path: "/ping",
