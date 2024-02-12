@@ -1,14 +1,14 @@
-import { vixeny, wrap } from "vixeny";
+import { vixeny , wrap} from "vixeny";
 import { staticServerPlugings } from "vixeny-prespective";
+import root from "./src/paths/root.ts";
+import { globalOptions } from "./src/globalOptions.ts";
+
 
 Bun.serve({
-  fetch: vixeny({
-    enableLiveReloading: true,
-  })([
-    {
-      path: "/",
-      f: () => "hello world",
-    },
+  fetch: vixeny(globalOptions)([
+    ...wrap(globalOptions)()
+      .union(root.unwrap())
+      .unwrap(),
     //with static server
     {
       type: "fileServer",

@@ -93,6 +93,7 @@ inquirer.prompt(questions).then((answers) => {
       );
       copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
+      copyTemplateFiles("src/", projectPath);
       console.log("have fun");
     });
   });
