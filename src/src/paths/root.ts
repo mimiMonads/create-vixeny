@@ -4,10 +4,16 @@ import { globalOptions } from "../globalOptions.ts";
 const path = globalOptions.hasName;
 
 export default wrap(globalOptions)()
-  .customPetition({
-    path: "/",
-    f: () => new Response('Hello world!'),
-  })
+.customPetition({
+  path: "/",
+  f: () =>
+    new Response(null, {
+      status: 302,
+      headers: {
+        "Location": path + "public/main",
+      },
+    }),
+})
   .stdPetition({
     path: "/ping",
     f: () => "pong",

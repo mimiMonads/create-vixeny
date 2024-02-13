@@ -94,6 +94,33 @@ inquirer.prompt(questions).then((answers) => {
       copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
       copyTemplateFiles("src/", projectPath);
+      switch (answers.installationChoice) {
+        case 'pug':
+          replaceOptionsAndImports(projectPath,
+            'import { pug , staticServerPlugings } from "vixeny-prespective";',
+            `,
+cyclePlugin: {
+  compileFile: pug.compileFile,
+  compile: pug.compile,
+  compileClient: pug.compileClient,
+  compileFileClient: pug.compileFileClient,
+  render: pug.render,
+  renderFile: pug.renderFile,
+}`,
+              `
+const staticServer = {
+  type: "fileServer",
+  name: "/public",
+  path: "./views/public/",
+  //it has options
+  template: staticServerPlugings.pug({
+    preserveExtension: true
+  }),
+};`
+            )
+         
+          break;
+      }
       console.log("have fun");
     });
   });
@@ -130,4 +157,29 @@ function copyTemplateFiles(templateName, projectPath) {
   } catch (error) {
     console.error("Error copying template files:", error);
   }
+}
+function replaceOptionsAndImports(projectPath, additionalImports, additionalOptions,additionalStaticServer ) {
+  const filePath = path.join(projectPath, '/src/globalOptions.ts'); // Adjust extension if necessary
+  
+  // Read the file content
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(`Error reading file: ${err}`);
+      return;
+    }
+    
+
+    let updatedContent = data.replace('///IMPORTS///', additionalImports)
+    updatedContent = updatedContent.replace('///OPTIONS///', additionalOptions);
+    updatedContent = updatedContent.replace('///STATICSERVER///', additionalStaticServer);
+
+    // Write the updated content back to the file
+    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error(`Error writing file: ${err}`);
+        return;
+      }
+     
+    });
+  });
 }

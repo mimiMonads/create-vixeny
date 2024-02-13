@@ -1,3 +1,4 @@
+///IMPORTS///
 import { assertOptions } from "vixeny";
 import { parseArgs } from "util";
 
@@ -17,11 +18,15 @@ const globalOptions = {
   ...(values.enableLiveReloading ? {
     enableLiveReloading:true as const
   } : {})
+  ///OPTIONS///
 };
 
 const cryptoKey = {
   globalKey: crypto.randomUUID(),
 };
 
+///STATICSERVER///
+
+
 assertOptions(globalOptions);
-export { cryptoKey, globalOptions };
+export { cryptoKey , globalOptions , staticServer };

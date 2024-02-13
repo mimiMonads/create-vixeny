@@ -1,7 +1,6 @@
 import { vixeny , wrap} from "vixeny";
-import { staticServerPlugings } from "vixeny-prespective";
 import root from "./src/paths/root.ts";
-import { globalOptions } from "./src/globalOptions.ts";
+import { globalOptions , staticServer} from "./src/globalOptions.ts";
 
 
 Bun.serve({
@@ -10,12 +9,8 @@ Bun.serve({
       .union(root.unwrap())
       .unwrap(),
     //with static server
-    {
-      type: "fileServer",
-      name: "/public",
-      path: "./views/public/",
-      //it has options
-      template: staticServerPlugings.pug(),
-    },
+    staticServer
   ]),
 });
+
+console.log('Server in : ' + globalOptions.hasName)
