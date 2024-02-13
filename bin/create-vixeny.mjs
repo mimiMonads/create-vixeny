@@ -13,7 +13,7 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which template would you like?",
-    choices: ["pug"],
+    choices: ["pug","vanilla"],
   },
   {
     type: "list",
@@ -43,7 +43,6 @@ inquirer.prompt(questions).then((answers) => {
   // Your previous answers handling here
   const projectName = answers.projectName;
 
-  const isVanilla = answers.installationChoice === "vanilla";
   const projectPath = path.join(process.cwd(), projectName);
 
   // Create project directory if it doesn't exist
@@ -75,12 +74,21 @@ inquirer.prompt(questions).then((answers) => {
       packageJson.dependencies = {
         ...packageJson.dependencies,
         "vixeny": "latest", // Assuming you want the latest version
-        "vixeny-prespective": "latest", // Adjust version as necessary
       };
+
+      //vanilla case
+      if(answers.installationChoice !== "vanilla"){
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "vixeny-prespective": "latest",
+        }; 
+      }
+      
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
         "chokidar": "^3.6.0", // Specify your desired version
-      };
+      
+    }
       packageJson.main = "main.ts";
 
       fs.writeFile(
@@ -118,7 +126,17 @@ const staticServer = {
   }),
 };`
             )
-         
+          break;
+          case "vanilla":
+            replaceOptionsAndImports(projectPath,
+              "","",`
+const staticServer = {
+  type: "fileServer",
+  name: "/public",
+  path: "./views/public/",
+  removeExtensionOf: [".html"],
+              };`
+          )
           break;
       }
       console.log("have fun");
