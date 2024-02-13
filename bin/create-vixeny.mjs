@@ -114,7 +114,7 @@ const staticServer = {
   path: "./views/public/",
   //it has options
   template: staticServerPlugings.pug({
-    preserveExtension: true
+    preserveExtension: false
   }),
 };`
             )
