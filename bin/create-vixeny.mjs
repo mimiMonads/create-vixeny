@@ -143,6 +143,9 @@ const staticServer = {
           break;
       }
       console.log("cd " + answers.projectName);
+      if(answers.projectName !== 'deno'){
+        console.log("npm i / bun i");
+      }
       console.log("For release: npm run start");
       console.log("For development: npm run dev");
       console.log("Have fun");
