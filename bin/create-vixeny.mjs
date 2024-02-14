@@ -19,7 +19,7 @@ const questions = [
     type: "list",
     name: "runtime",
     message: "Which runtime would you prefer?",
-    choices: ["bun"],
+    choices: ["bun","deno"],
   },
   {
     type: "input",
@@ -66,11 +66,14 @@ inquirer.prompt(questions).then((answers) => {
       const packageJson = JSON.parse(data);
       packageJson.scripts = {
         ...packageJson.scripts,
-        start: "bun run main.ts",
-        dev: "bun run --liveReloading watcher.mjs",
+        start:  answers.runtime === "deno"
+        ? "deno run -A main.ts"
+        : "bun run main.ts",
+        dev:  answers.runtime === "deno"
+        ? "deno run -A  watcher.mjs --liveReloading "
+        :  "bun run --liveReloading  watcher.mjs",
         test: "bun test /",
       };
-      // Set dependencies and devDependencies
       packageJson.dependencies = {
         ...packageJson.dependencies,
         "vixeny": "latest", // Assuming you want the latest version
@@ -139,7 +142,10 @@ const staticServer = {
           )
           break;
       }
-      console.log("have fun");
+      console.log("cd " + answers.projectName);
+      console.log("For release: npm run start");
+      console.log("For development: npm run dev");
+      console.log("Have fun");
     });
   });
 });

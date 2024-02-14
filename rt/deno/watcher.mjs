@@ -1,38 +1,42 @@
-// Ensure you have the necessary permissions to run this script:
-// deno run --allow-read --allow-run your_script.ts
+let currentProcess = new Deno.run({
+  cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
+  stdout: "inherit",
+  stderr: "inherit",
+});;
+
+async function killAndAwaitProcess() {
+  if (currentProcess) {
+    Deno.kill(currentProcess.pid, "SIGTERM");
+    await currentProcess.status(); // Wait for the process to exit
+    currentProcess.close(); // Clean up resources
+    currentProcess = null; // Reset the process variable
+  }
+}
 
 async function runDenoProcess() {
-  const process = Deno.run({
-    cmd: ["deno", "run", "--allow-all", "main.ts"], // Adjust permissions as needed
+  await killAndAwaitProcess(); // Ensure the previous process is fully terminated
+
+ 
+  currentProcess = new Deno.run({
+    cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
     stdout: "inherit",
     stderr: "inherit",
   });
-
-  // Wait for the process to exit and log the exit status
-  const { code } = await process.status();
-  console.log(`Subprocess exited with code ${code}`);
-  process.close();
 }
 
-// Watch for changes in the current directory, excluding .git and node_modules
+// Watch for changes, excluding .git and node_modules
 const watcher = Deno.watchFs(".", { recursive: true });
 
 let debounceTimer;
 
 for await (const event of watcher) {
-  // Filter out changes in .git and node_modules directories
-  if (
-    event.paths.some((path) =>
-      !path.includes(".git") && !path.includes("node_modules")
-    )
-  ) {
-    console.clear();
-    console.log("Detected changes:", event.paths);
-
-    // Debounce the restart to avoid triggering multiple restarts for batches of file changes
+  if (event.paths.some((path) => !path.includes(".git") && !path.includes("node_modules"))) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
-      await runDenoProcess();
-    }, 100); // Adjust debounce time as needed
+      console.clear();
+      await runDenoProcess(); // Start the process anew
+    }, 100); // Debounce time to prevent rapid restarts
   }
 }
+
+await killAndAwaitProcess()

@@ -1,6 +1,6 @@
 {
   "name": "create-vixeny",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "templates for Vixeny",
   "main": "main.ts",
   "repository": {

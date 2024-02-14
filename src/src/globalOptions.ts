@@ -1,21 +1,12 @@
 ///IMPORTS///
 import { assertOptions } from "vixeny";
-import { parseArgs } from "util";
+import parser from "vixeny/components/runtime/parseArguments.mjs"
 
-const { values } = parseArgs({
-  args: Bun.argv,
-  options: {
-    enableLiveReloading: {
-      type: 'boolean',
-    },
-  },
-  strict: true,
-  allowPositionals: true,
-});
+const values = parser()
 
 const globalOptions = {
   hasName: "http://localhost:3000/",
-  ...(values.enableLiveReloading ? {
+  ...(values?.liveReloading ? {
     enableLiveReloading:true as const
   } : {})
   ///OPTIONS///
