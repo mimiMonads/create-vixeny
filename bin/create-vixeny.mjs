@@ -117,7 +117,7 @@ inquirer.prompt(questions).then((answers) => {
         case 'pug':
           replaceOptionsAndImports(projectPath,
             'import { pug , staticServerPlugings } from "vixeny-prespective";\n' + 
-            'import { pug as pugModule } from "pug";\n' +
+            'import  * as pugModule  from "pug";\n' +
             'const fromPug = pug(pugModule)',
             `,
 cyclePlugin: {
