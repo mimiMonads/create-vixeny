@@ -86,6 +86,14 @@ inquirer.prompt(questions).then((answers) => {
           "vixeny-prespective": "latest",
         }; 
       }
+
+      //vanilla pug
+      if(answers.installationChoice === "pug"){
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "pug": "^3.0.2",
+        }; 
+      }
       
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
@@ -108,23 +116,20 @@ inquirer.prompt(questions).then((answers) => {
       switch (answers.installationChoice) {
         case 'pug':
           replaceOptionsAndImports(projectPath,
-            'import { pug , staticServerPlugings } from "vixeny-prespective";',
+            'import { pug , staticServerPlugings } from "vixeny-prespective";\n' + 
+            'import { pug as pugModule } from "pug";\n' +
+            'const fromPug = pug(pugModule)',
             `,
 cyclePlugin: {
-  compileFile: pug.compileFile,
-  compile: pug.compile,
-  compileClient: pug.compileClient,
-  compileFileClient: pug.compileFileClient,
-  render: pug.render,
-  renderFile: pug.renderFile,
-}`,
+  ...fromPug,
+},`,
               `
 const staticServer = {
   type: "fileServer",
   name: "/public",
   path: "./views/public/",
   //it has options
-  template: staticServerPlugings.pug({
+  template: staticServerPlugings.pug(pugModule)({
     preserveExtension: false
   }),
 };`
