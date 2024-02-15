@@ -129,7 +129,7 @@ const staticServer = {
   name: "/public",
   path: "./views/public/",
   //it has options
-  template: staticServerPlugings.pug(pugModule)({
+  template: staticServerPlugings.pug(pugModule.compileFile)({
     preserveExtension: false
   }),
 };`

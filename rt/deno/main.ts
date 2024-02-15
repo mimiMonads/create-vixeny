@@ -13,5 +13,3 @@ Deno.serve(
     staticServer
   ])
 ) 
-
-console.log('Server in : ' + globalOptions.hasName)
