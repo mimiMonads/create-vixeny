@@ -13,7 +13,7 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which template would you like?",
-    choices: ["pug","vanilla"],
+    choices: ["vanilla", "pug", "ejs"],
   },
   {
     type: "list",
@@ -87,11 +87,19 @@ inquirer.prompt(questions).then((answers) => {
         }; 
       }
 
-      //vanilla pug
+      // pug
       if(answers.installationChoice === "pug"){
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "pug": "^3.0.2",
+        }; 
+      }
+  
+      // pug
+      if(answers.installationChoice === "ejs"){
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "ejs": "^3.1.9",
         }; 
       }
       
@@ -146,14 +154,36 @@ const staticServer = {
               };`
           )
           break;
+          case "ejs":
+            replaceOptionsAndImports(projectPath,
+              'import { ejs , staticServerPlugings } from "vixeny-prespective";\n' + 
+              'import  * as ejsModule  from "ejs";\n' +
+              'const fromEjs = ejs(ejsModule)',
+              `,
+cyclePlugin: {
+  ...fromEjs,
+},`,`
+const staticServer = {
+  type: "fileServer",
+  name: "/public",
+  path: "./views/public/",
+  template: staticServerPlugings.ejs(ejsModule.renderFile)({
+    preserveExtension: false
+  }),
+              };`
+          )
+          break;
       }
-      console.log("cd " + answers.projectName);
-      if(answers.projectName !== 'deno'){
-        console.log("npm i / bun i");
-      }
-      console.log("For release: npm run start");
-      console.log("For development: npm run dev");
-      console.log("Have fun");
+      console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
+      // The rest of your code for configuring the project
+      
+      console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
+      console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
+      console.log("\x1b[33m%s\x1b[0m", answers.runtime !== 'deno' ? `npm install` : `deno fetch`); // Adjust based on runtime
+      console.log("\x1b[35m%s\x1b[0m", "For development: npm run dev");
+      console.log("\x1b[35m%s\x1b[0m", "For release: npm run start");
+      console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
+      
     });
   });
 });
