@@ -184,8 +184,6 @@ const staticServer = {
           break;
       }
       console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
-      // The rest of your code for configuring the project
-
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
       if(answers.runtime !== "deno"){
