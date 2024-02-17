@@ -1,6 +1,6 @@
 {
   "imports": {
-    "vixeny": "https://deno.land/x/endofunctor/main.ts",
+    "vixeny":"https://deno.land/x/endofunctor@v0.0.921/main.ts",
     "vixeny-prespective": "https://deno.land/x/vixeny_prespective/main.ts",
     "ejs": "npm:ejs",
     "pug": "npm:pug"

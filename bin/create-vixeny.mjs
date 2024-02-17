@@ -72,15 +72,17 @@ inquirer.prompt(questions).then((answers) => {
         dev: answers.runtime === "deno"
           ? "deno run -A  watcher.mjs --liveReloading "
           : "bun run --liveReloading  watcher.mjs",
-        test: "bun test /",
       };
+
+      if(answers.answers !== "deno"){
       packageJson.dependencies = {
         ...packageJson.dependencies,
         "vixeny": "latest", // Assuming you want the latest version
       };
 
+  
       //vanilla case
-      if (answers.installationChoice !== "vanilla") {
+      if (answers.installationChoice !== "vanilla" ) {
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "vixeny-prespective": "latest",
@@ -95,7 +97,7 @@ inquirer.prompt(questions).then((answers) => {
         };
       }
 
-      // pug
+      // ejs
       if (answers.installationChoice === "ejs") {
         packageJson.dependencies = {
           ...packageJson.dependencies,
@@ -107,6 +109,8 @@ inquirer.prompt(questions).then((answers) => {
         ...packageJson.devDependencies,
         "chokidar": "^3.6.0",
       };
+    }
+
       packageJson.main = "main.ts";
 
       fs.writeFile(
@@ -184,10 +188,12 @@ const staticServer = {
 
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      console.log(
-        "\x1b[33m%s\x1b[0m",
-        answers.runtime !== "deno" ? `npm install` : ``,
-      ); // Adjust based on runtime
+      if(answers.runtime !== "deno"){
+        console.log(
+          "\x1b[33m%s\x1b[0m",
+          `bun i`
+        );
+      }
       console.log("\x1b[35m%s\x1b[0m", "For development: npm run dev");
       console.log("\x1b[35m%s\x1b[0m", "For release: npm run start");
       console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
