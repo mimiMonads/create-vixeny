@@ -71,7 +71,7 @@ inquirer.prompt(questions).then((answers) => {
           : "bun run main.ts",
         dev: answers.runtime === "deno"
           ? "deno run -A  watcher.mjs --liveReloading "
-          : "bun run --liveReloading  watcher.mjs",
+          : "bun run watcher.mjs",
       };
 
       if(answers.answers !== "deno"){
