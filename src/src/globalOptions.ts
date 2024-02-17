@@ -1,15 +1,16 @@
 import { assertOptions } from "vixeny";
-import parser from "vixeny/components/runtime/parseArguments.mjs"
+import parser from "vixeny/components/runtime/parseArguments.mjs";
 ///IMPORTS///
 
-
-const values = parser()
+const values = parser();
 
 const globalOptions = {
   hasName: "http://localhost:3000/",
-  ...(values?.liveReloading ? {
-    enableLiveReloading:true as const
-  } : {})
+  ...(values?.liveReloading
+    ? {
+      enableLiveReloading: true as const,
+    }
+    : {})
   ///OPTIONS///
 };
 
@@ -19,6 +20,5 @@ const cryptoKey = {
 
 ///STATICSERVER///
 
-
 assertOptions(globalOptions);
-export { cryptoKey , globalOptions , staticServer };
+export { cryptoKey, globalOptions, staticServer };

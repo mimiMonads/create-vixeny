@@ -19,7 +19,7 @@ const questions = [
     type: "list",
     name: "runtime",
     message: "Which runtime would you prefer?",
-    choices: ["bun","deno"],
+    choices: ["bun", "deno"],
   },
   {
     type: "input",
@@ -66,12 +66,12 @@ inquirer.prompt(questions).then((answers) => {
       const packageJson = JSON.parse(data);
       packageJson.scripts = {
         ...packageJson.scripts,
-        start:  answers.runtime === "deno"
-        ? "deno run -A main.ts"
-        : "bun run main.ts",
-        dev:  answers.runtime === "deno"
-        ? "deno run -A  watcher.mjs --liveReloading "
-        :  "bun run --liveReloading  watcher.mjs",
+        start: answers.runtime === "deno"
+          ? "deno run -A main.ts"
+          : "bun run main.ts",
+        dev: answers.runtime === "deno"
+          ? "deno run -A  watcher.mjs --liveReloading "
+          : "bun run --liveReloading  watcher.mjs",
         test: "bun test /",
       };
       packageJson.dependencies = {
@@ -80,34 +80,33 @@ inquirer.prompt(questions).then((answers) => {
       };
 
       //vanilla case
-      if(answers.installationChoice !== "vanilla"){
+      if (answers.installationChoice !== "vanilla") {
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "vixeny-prespective": "latest",
-        }; 
+        };
       }
 
       // pug
-      if(answers.installationChoice === "pug"){
+      if (answers.installationChoice === "pug") {
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "pug": "^3.0.2",
-        }; 
+        };
       }
-  
+
       // pug
-      if(answers.installationChoice === "ejs"){
+      if (answers.installationChoice === "ejs") {
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "ejs": "^3.1.9",
-        }; 
+        };
       }
-      
+
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
-        "chokidar": "^3.6.0", // Specify your desired version
-      
-    }
+        "chokidar": "^3.6.0",
+      };
       packageJson.main = "main.ts";
 
       fs.writeFile(
@@ -122,16 +121,17 @@ inquirer.prompt(questions).then((answers) => {
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
       copyTemplateFiles("src/", projectPath);
       switch (answers.installationChoice) {
-        case 'pug':
-          replaceOptionsAndImports(projectPath,
-            'import { pug , staticServerPlugings } from "vixeny-prespective";\n' + 
-            'import  * as pugModule  from "pug";\n' +
-            'const fromPug = pug(pugModule)',
+        case "pug":
+          replaceOptionsAndImports(
+            projectPath,
+            'import { pug , staticServerPlugings } from "vixeny-prespective";\n' +
+              'import  * as pugModule  from "pug";\n' +
+              "const fromPug = pug(pugModule)",
             `,
 cyclePlugin: {
   ...fromPug,
 },`,
-              `
+            `
 const staticServer = {
   type: "fileServer",
   name: "/public",
@@ -140,29 +140,34 @@ const staticServer = {
   template: staticServerPlugings.pug(pugModule.compileFile)({
     preserveExtension: false
   }),
-};`
-            )
+};`,
+          );
           break;
-          case "vanilla":
-            replaceOptionsAndImports(projectPath,
-              "","",`
+        case "vanilla":
+          replaceOptionsAndImports(
+            projectPath,
+            "",
+            "",
+            `
 const staticServer = {
   type: "fileServer",
   name: "/public",
   path: "./views/public/",
   removeExtensionOf: [".html"],
-              };`
-          )
+              };`,
+          );
           break;
-          case "ejs":
-            replaceOptionsAndImports(projectPath,
-              'import { ejs , staticServerPlugings } from "vixeny-prespective";\n' + 
+        case "ejs":
+          replaceOptionsAndImports(
+            projectPath,
+            'import { ejs , staticServerPlugings } from "vixeny-prespective";\n' +
               'import  * as ejsModule  from "ejs";\n' +
-              'const fromEjs = ejs(ejsModule)',
-              `,
+              "const fromEjs = ejs(ejsModule)",
+            `,
 cyclePlugin: {
   ...fromEjs,
-},`,`
+},`,
+            `
 const staticServer = {
   type: "fileServer",
   name: "/public",
@@ -170,20 +175,22 @@ const staticServer = {
   template: staticServerPlugings.ejs(ejsModule.renderFile)({
     preserveExtension: false
   }),
-              };`
-          )
+              };`,
+          );
           break;
       }
       console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
       // The rest of your code for configuring the project
-      
+
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      console.log("\x1b[33m%s\x1b[0m", answers.runtime !== 'deno' ? `npm install` : `deno fetch`); // Adjust based on runtime
+      console.log(
+        "\x1b[33m%s\x1b[0m",
+        answers.runtime !== "deno" ? `npm install` : ``,
+      ); // Adjust based on runtime
       console.log("\x1b[35m%s\x1b[0m", "For development: npm run dev");
       console.log("\x1b[35m%s\x1b[0m", "For release: npm run start");
       console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
-      
     });
   });
 });
@@ -220,28 +227,34 @@ function copyTemplateFiles(templateName, projectPath) {
     console.error("Error copying template files:", error);
   }
 }
-function replaceOptionsAndImports(projectPath, additionalImports, additionalOptions,additionalStaticServer ) {
-  const filePath = path.join(projectPath, '/src/globalOptions.ts'); // Adjust extension if necessary
-  
+function replaceOptionsAndImports(
+  projectPath,
+  additionalImports,
+  additionalOptions,
+  additionalStaticServer,
+) {
+  const filePath = path.join(projectPath, "/src/globalOptions.ts"); // Adjust extension if necessary
+
   // Read the file content
-  fs.readFile(filePath, 'utf8', (err, data) => {
+  fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
       console.error(`Error reading file: ${err}`);
       return;
     }
-    
 
-    let updatedContent = data.replace('///IMPORTS///', additionalImports)
-    updatedContent = updatedContent.replace('///OPTIONS///', additionalOptions);
-    updatedContent = updatedContent.replace('///STATICSERVER///', additionalStaticServer);
+    let updatedContent = data.replace("///IMPORTS///", additionalImports);
+    updatedContent = updatedContent.replace("///OPTIONS///", additionalOptions);
+    updatedContent = updatedContent.replace(
+      "///STATICSERVER///",
+      additionalStaticServer,
+    );
 
     // Write the updated content back to the file
-    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+    fs.writeFile(filePath, updatedContent, "utf8", (err) => {
       if (err) {
         console.error(`Error writing file: ${err}`);
         return;
       }
-     
     });
   });
 }

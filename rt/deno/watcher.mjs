@@ -2,7 +2,7 @@ let currentProcess = new Deno.run({
   cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
   stdout: "inherit",
   stderr: "inherit",
-});;
+});
 
 async function killAndAwaitProcess() {
   if (currentProcess) {
@@ -16,7 +16,6 @@ async function killAndAwaitProcess() {
 async function runDenoProcess() {
   await killAndAwaitProcess(); // Ensure the previous process is fully terminated
 
- 
   currentProcess = new Deno.run({
     cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
     stdout: "inherit",
@@ -30,7 +29,11 @@ const watcher = Deno.watchFs(".", { recursive: true });
 let debounceTimer;
 
 for await (const event of watcher) {
-  if (event.paths.some((path) => !path.includes(".git") && !path.includes("node_modules"))) {
+  if (
+    event.paths.some((path) =>
+      !path.includes(".git") && !path.includes("node_modules")
+    )
+  ) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
       console.clear();
@@ -39,4 +42,4 @@ for await (const event of watcher) {
   }
 }
 
-await killAndAwaitProcess()
+await killAndAwaitProcess();
