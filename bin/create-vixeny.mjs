@@ -106,6 +106,13 @@ inquirer.prompt(questions).then((answers) => {
         };
       }
 
+
+      // "rehype-document": "^7.0.3",
+      // "rehype-format": "^5.0.0",
+      // "rehype-stringify": "^10.0.0",
+      // "remark-parse": "^11.0.0",
+      // "remark-rehype": "^11.1.0",
+      // "unified": "^11.0.4",
     }
 
       packageJson.main = "main.ts";
@@ -125,7 +132,7 @@ inquirer.prompt(questions).then((answers) => {
         case "pug":
           replaceOptionsAndImports(
             projectPath,
-            'import { pug , staticServerPlugings } from "vixeny-prespective";\n' +
+            'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as pugModule  from "pug";\n' +
               "const fromPug = pug(pugModule)",
             `,
@@ -138,7 +145,7 @@ const staticServer = {
   name: "/public",
   path: "./views/public/",
   //it has options
-  template: [staticServerPlugings.pug(pugModule.compileFile)({
+  template: [pugStaticServerPlugin(pugModule.compileFile)({
     preserveExtension: false
   })],
 };`,
@@ -161,7 +168,7 @@ const staticServer = {
         case "ejs":
           replaceOptionsAndImports(
             projectPath,
-            'import { ejs , staticServerPlugings } from "vixeny-prespective";\n' +
+            'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as ejsModule  from "ejs";\n' +
               "const fromEjs = ejs(ejsModule)",
             `,
@@ -173,7 +180,7 @@ const staticServer = {
   type: "fileServer",
   name: "/public",
   path: "./views/public/",
-  template: [staticServerPlugings.ejs(ejsModule.renderFile)({
+  template: [ejsStaticServerPlugin(ejsModule.renderFile)({
     preserveExtension: false
   })],
               };`,
