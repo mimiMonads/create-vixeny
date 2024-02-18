@@ -8,7 +8,9 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
 export default  remarkStaticServer(unified)(    
-  {uses:[
+  {
+    preserveExtension: false,
+    uses:[
       [remarkParse]  as PluginTuple ,
       [remarkRehype] as unknown as PluginTuple ,
       [rehypeDocument, {title: '👋🌍'}] as unknown as PluginTuple,

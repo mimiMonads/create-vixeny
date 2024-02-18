@@ -22,6 +22,14 @@ const questions = [
     choices: ["bun", "deno"],
   },
   {
+    type: "checkbox",
+    name: "plugins",
+    message: "Would you like to include any extra plugins?",
+    choices: [
+      { name: "remark", value: "remark" },
+    ],
+  },
+  {
     type: "input",
     name: "projectName",
     message: "What is the name of your project?",
@@ -106,13 +114,17 @@ inquirer.prompt(questions).then((answers) => {
         };
       }
 
-
-      // "rehype-document": "^7.0.3",
-      // "rehype-format": "^5.0.0",
-      // "rehype-stringify": "^10.0.0",
-      // "remark-parse": "^11.0.0",
-      // "remark-rehype": "^11.1.0",
-      // "unified": "^11.0.4",
+      if (answers.plugins.includes("remark")) {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+      "rehype-document": "^7.0.3",
+      "rehype-format": "^5.0.0",
+      "rehype-stringify": "^10.0.0",
+      "remark-parse": "^11.0.0",
+      "remark-rehype": "^11.1.0",
+      "unified": "^11.0.4",
+        };
+      }
     }
 
       packageJson.main = "main.ts";
@@ -125,14 +137,26 @@ inquirer.prompt(questions).then((answers) => {
           if (err) return console.error(`Failed to write package.json: ${err}`);
         },
       );
+      const listOfPlugins = 
+      ([ answers.installationChoice, ...answers.plugins])
+        .filter( x => x !== 'vanilla')
+
+
       copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
       copyTemplateFiles("src/", projectPath);
+      listOfPlugins.forEach( x =>
+        copyTemplateFiles("plugins/" + x + '/', projectPath)
+        )
+
+      const importedList = listOfImports(listOfPlugins)
+      const listForRemplace = listOfPlugins.map( x => x + 'P')
+
       switch (answers.installationChoice) {
         case "pug":
           replaceOptionsAndImports(
             projectPath,
-            'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
+            importedList + 'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as pugModule  from "pug";\n' +
               "const fromPug = pug(pugModule)",
             `,
@@ -145,16 +169,13 @@ const staticServer = {
   name: "/public",
   path: "./views/public/",
   //it has options
-  template: [pugStaticServerPlugin(pugModule.compileFile)({
-    preserveExtension: false
-  })],
-};`,
+  template: [${listForRemplace.toString()}]};`,
           );
           break;
         case "vanilla":
           replaceOptionsAndImports(
             projectPath,
-            "",
+            importedList ,
             "",
             `
 const staticServer = {
@@ -162,13 +183,13 @@ const staticServer = {
   name: "/public",
   path: "./views/public/",
   removeExtensionOf: [".html"],
-              };`,
+  template: [${listForRemplace.toString()}]};`,
           );
           break;
         case "ejs":
           replaceOptionsAndImports(
             projectPath,
-            'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
+            importedList + 'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as ejsModule  from "ejs";\n' +
               "const fromEjs = ejs(ejsModule)",
             `,
@@ -180,10 +201,7 @@ const staticServer = {
   type: "fileServer",
   name: "/public",
   path: "./views/public/",
-  template: [ejsStaticServerPlugin(ejsModule.renderFile)({
-    preserveExtension: false
-  })],
-              };`,
+  template: [${listForRemplace.toString()}]};`,
           );
           break;
       }
@@ -266,3 +284,7 @@ function replaceOptionsAndImports(
     });
   });
 }
+const listOfImports = (arr) =>
+  arr.reduce( (acc,v) =>  acc + 
+  'import ' + v +'P' +' from "./plugins/'+v+'.ts"\n' 
+  , '')
