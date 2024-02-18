@@ -78,6 +78,7 @@ inquirer.prompt(questions).then((answers) => {
       packageJson.dependencies = {
         ...packageJson.dependencies,
         "vixeny": "latest", // Assuming you want the latest version
+        "chokidar": "^3.6.0",
       };
 
   
@@ -105,10 +106,6 @@ inquirer.prompt(questions).then((answers) => {
         };
       }
 
-      packageJson.devDependencies = {
-        ...packageJson.devDependencies,
-        "chokidar": "^3.6.0",
-      };
     }
 
       packageJson.main = "main.ts";
@@ -141,9 +138,9 @@ const staticServer = {
   name: "/public",
   path: "./views/public/",
   //it has options
-  template: staticServerPlugings.pug(pugModule.compileFile)({
+  template: [staticServerPlugings.pug(pugModule.compileFile)({
     preserveExtension: false
-  }),
+  })],
 };`,
           );
           break;
@@ -176,9 +173,9 @@ const staticServer = {
   type: "fileServer",
   name: "/public",
   path: "./views/public/",
-  template: staticServerPlugings.ejs(ejsModule.renderFile)({
+  template: [staticServerPlugings.ejs(ejsModule.renderFile)({
     preserveExtension: false
-  }),
+  })],
               };`,
           );
           break;
