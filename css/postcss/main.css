@@ -1,0 +1,52 @@
+/* Define variables for colors */
+:root {
+    --background-color-main: #2C2A4A; /* Dark purple background */
+    --text-color-main: #C7C5F4; /* Light purple text */
+    --background-color-secondary: #1E1C36; /* Darker purple */
+    --text-color-secondary: white;
+  }
+  
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color-main);
+    color: var(--text-color-main);
+  }
+  
+  header {
+    background-color: var(--background-color-secondary);
+    color: var(--text-color-secondary);
+    padding: 10px 0;
+    text-align: center;
+  
+    /* Example of nested rule with PostCSS using a plugin like postcss-nested */
+    a {
+      color: var(--text-color-secondary);
+      margin: 0 15px;
+      text-decoration: none;
+    }
+  }
+  
+  footer {
+    background-color: var(--background-color-secondary);
+    color: var(--text-color-secondary);
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  main {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .centered-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  
