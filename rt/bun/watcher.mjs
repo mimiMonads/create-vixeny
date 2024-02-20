@@ -11,7 +11,9 @@ const runBun = () => {
   }
 
   // Start the Bun process
-  bunProcess =  spawn("bun", ["run","main.ts", "--liveReloading"], { stdio: "inherit" });
+  bunProcess = spawn("bun", ["run", "main.ts", "--liveReloading"], {
+    stdio: "inherit",
+  });
 
   bunProcess.on("error", (err) => {
     console.error(`Failed to start subprocess: ${err}`);

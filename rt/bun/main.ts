@@ -1,7 +1,6 @@
-import { vixeny , wrap} from "vixeny";
+import { vixeny, wrap } from "vixeny";
 import root from "./src/paths/root.ts";
-import { globalOptions , staticServer} from "./src/globalOptions.ts";
-
+import { globalOptions, staticServer } from "./src/globalOptions.ts";
 
 Bun.serve({
   fetch: vixeny(globalOptions)([
@@ -9,8 +8,8 @@ Bun.serve({
       .union(root.unwrap())
       .unwrap(),
     //with static server
-    staticServer
+    staticServer,
   ]),
 });
 
-console.log('Server in : ' + globalOptions.hasName)
+console.log("Server in : " + globalOptions.hasName);
