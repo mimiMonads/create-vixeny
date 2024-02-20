@@ -12,14 +12,14 @@ const questions = [
   {
     type: "list",
     name: "installationChoice",
-    message: "Welcome to Vixeny!, Which template would you like?",
+    message: "Welcome to Vixeny!, Which HTML template would you like?",
     choices: ["vanilla", "pug", "ejs"],
   },
   {
     type: "list",
-    name: "runtime",
-    message: "Which runtime would you prefer?",
-    choices: ["bun", "deno"],
+    name: "style",
+    message: "which CSS engine is wanted?",
+    choices: ["vanilla", "postcss", "sass"],
   },
   {
     type: "checkbox",
@@ -28,6 +28,12 @@ const questions = [
     choices: [
       { name: "remark", value: "remark" },
     ],
+  },
+  {
+    type: "list",
+    name: "runtime",
+    message: "Which runtime would you prefer?",
+    choices: ["bun", "deno"],
   },
   {
     type: "input",
@@ -90,13 +96,12 @@ inquirer.prompt(questions).then((answers) => {
       };
 
   
-      //vanilla case
-      if (answers.installationChoice !== "vanilla" ) {
+
         packageJson.dependencies = {
           ...packageJson.dependencies,
           "vixeny-prespective": "latest",
         };
-      }
+      
 
       // pug
       if (answers.installationChoice === "pug") {
@@ -125,6 +130,22 @@ inquirer.prompt(questions).then((answers) => {
       "unified": "^11.0.4",
         };
       }
+
+      if (answers.style === "sass") {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "sass": "^1.71.0"
+        };
+      }
+
+      if (answers.style === "postcss") {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "autoprefixer": "^10.4.17",
+          "postcss": "^8.4.35",
+          "postcss-nested": "^6.0.1",
+        };
+      }   
     }
 
       packageJson.main = "main.ts";
@@ -137,13 +158,16 @@ inquirer.prompt(questions).then((answers) => {
           if (err) return console.error(`Failed to write package.json: ${err}`);
         },
       );
+      //Get the plugins using
       const listOfPlugins = 
-      ([ answers.installationChoice, ...answers.plugins])
+      ([ answers.installationChoice, answers.style  ,...answers.plugins])
         .filter( x => x !== 'vanilla')
 
 
       copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
+      copyTemplateFiles("rt/" + answers.runtime, projectPath);
+      copyTemplateFiles("css/" + answers.style, projectPath);
       copyTemplateFiles("src/", projectPath);
       listOfPlugins.forEach( x =>
         copyTemplateFiles("plugins/" + x + '/', projectPath)
@@ -208,12 +232,6 @@ const staticServer = {
       console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      if(answers.runtime !== "deno"){
-        console.log(
-          "\x1b[33m%s\x1b[0m",
-          `bun i`
-        );
-      }
       console.log("\x1b[35m%s\x1b[0m", "For development: npm run dev");
       console.log("\x1b[35m%s\x1b[0m", "For release: npm run start");
       console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
