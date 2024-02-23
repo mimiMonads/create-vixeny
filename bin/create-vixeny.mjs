@@ -7,6 +7,9 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const packageManager = await checkPackageManager('npm') ??
+await checkPackageManager('yarn')??
+await checkPackageManager('pnpm');
 
 const questions = [
   {
@@ -65,7 +68,7 @@ inquirer.prompt(questions).then((answers) => {
   }
 
   // Initialize npm project
-  exec(`npm init -y`, { cwd: projectPath }, (error) => {
+  exec(`${packageManager} init -y`, { cwd: projectPath }, (error) => {
     if (error) {
       console.error(`Failed to initialize the project: ${error}`);
       return;
@@ -190,8 +193,9 @@ cyclePlugin: {
             `
 const staticServer = {
   type: "fileServer",
-  name: "/public",
+  name: "/",
   path: "./views/public/",
+  slashIs: "$main",
   //it has options
   template: [${listForRemplace.toString()}]};`,
           );
@@ -204,9 +208,10 @@ const staticServer = {
             `
 const staticServer = {
   type: "fileServer",
-  name: "/public",
+  name: "/",
   path: "./views/public/",
   removeExtensionOf: [".html"],
+  slashIs: "$main",
   template: [${listForRemplace.toString()}]};`,
           );
           break;
@@ -223,8 +228,9 @@ cyclePlugin: {
             `
 const staticServer = {
   type: "fileServer",
-  name: "/public",
+  name: "/",
   path: "./views/public/",
+  slashIs: "$main",
   template: [${listForRemplace.toString()}]};`,
           );
           break;
@@ -232,8 +238,8 @@ const staticServer = {
       console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      console.log("\x1b[35m%s\x1b[0m", "For development: npm run dev");
-      console.log("\x1b[35m%s\x1b[0m", "For release: npm run start");
+      console.log("\x1b[35m%s\x1b[0m", `For development: ${packageManager} run dev`);
+      console.log("\x1b[35m%s\x1b[0m", `For release: ${packageManager} run start`);
       console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
     });
   });
@@ -306,3 +312,15 @@ const listOfImports = (arr) =>
   arr.reduce( (acc,v) =>  acc + 
   'import ' + v +'P' +' from "./plugins/'+v+'.ts"\n' 
   , '')
+
+  function checkPackageManager(packageManager) {
+    return new Promise((resolve) => {
+      exec(`${packageManager} -v`, (error, stdout, stderr) => {
+        if (error) {
+          resolve(null); // Package manager not found
+        } else {
+          resolve(packageManager); // Return the version number
+        }
+      });
+    });
+  }
