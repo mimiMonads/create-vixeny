@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const packageManager = await checkPackageManager('npm') ??
-await checkPackageManager('yarn')??
-await checkPackageManager('pnpm');
+const packageManager = await checkPackageManager("npm") ??
+  await checkPackageManager("yarn") ??
+  await checkPackageManager("pnpm");
 
 const questions = [
   {
@@ -91,65 +91,65 @@ inquirer.prompt(questions).then((answers) => {
           : "bun run watcher.mjs",
       };
 
-      if(answers.answers !== "deno"){
-      packageJson.dependencies = {
-        ...packageJson.dependencies,
-        "vixeny": "latest", // Assuming you want the latest version
-        "chokidar": "^3.6.0",
-      };
-
-  
+      if (answers.answers !== "deno") {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          "vixeny": "latest", // Assuming you want the latest version
+          "chokidar": "^3.6.0",
+        };
 
         packageJson.dependencies = {
           ...packageJson.dependencies,
+
           "vixeny-prespective": "latest",
-        };
-      
 
-      // pug
-      if (answers.installationChoice === "pug") {
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
-          "pug": "^3.0.2",
+          "esbuild": "^0.20.1",
         };
+
+        // pug
+        if (answers.installationChoice === "pug") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "pug": "^3.0.2",
+          };
+        }
+
+        // ejs
+        if (answers.installationChoice === "ejs") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "ejs": "^3.1.9",
+          };
+        }
+
+        if (answers.plugins.includes("remark")) {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "rehype-document": "^7.0.3",
+            "rehype-format": "^5.0.0",
+            "rehype-stringify": "^10.0.0",
+            "remark-parse": "^11.0.0",
+            "remark-rehype": "^11.1.0",
+            "unified": "^11.0.4",
+          };
+        }
+
+        if (answers.style === "sass") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "sass": "^1.71.0",
+          };
+        }
+
+        if (answers.style === "postcss") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "autoprefixer": "^10.4.17",
+            "postcss": "^8.4.35",
+            "postcss-nested": "^6.0.1",
+          };
+        }
       }
-
-      // ejs
-      if (answers.installationChoice === "ejs") {
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
-          "ejs": "^3.1.9",
-        };
-      }
-
-      if (answers.plugins.includes("remark")) {
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
-      "rehype-document": "^7.0.3",
-      "rehype-format": "^5.0.0",
-      "rehype-stringify": "^10.0.0",
-      "remark-parse": "^11.0.0",
-      "remark-rehype": "^11.1.0",
-      "unified": "^11.0.4",
-        };
-      }
-
-      if (answers.style === "sass") {
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
-          "sass": "^1.71.0"
-        };
-      }
-
-      if (answers.style === "postcss") {
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
-          "autoprefixer": "^10.4.17",
-          "postcss": "^8.4.35",
-          "postcss-nested": "^6.0.1",
-        };
-      }   
-    }
 
       packageJson.main = "main.ts";
 
@@ -162,28 +162,31 @@ inquirer.prompt(questions).then((answers) => {
         },
       );
       //Get the plugins using
-      const listOfPlugins = 
-      ([ answers.installationChoice, answers.style  ,...answers.plugins])
-        .filter( x => x !== 'vanilla')
-
+      const listOfPlugins = [
+        answers.installationChoice,
+        answers.style,
+        "typescript",
+        ...answers.plugins,
+      ]
+        .filter((x) => x !== "vanilla");
 
       copyTemplateFiles("templates/" + answers.installationChoice, projectPath);
       copyTemplateFiles("rt/" + answers.runtime, projectPath);
-      copyTemplateFiles("rt/" + answers.runtime, projectPath);
       copyTemplateFiles("css/" + answers.style, projectPath);
       copyTemplateFiles("src/", projectPath);
-      listOfPlugins.forEach( x =>
-        copyTemplateFiles("plugins/" + x + '/', projectPath)
-        )
+      listOfPlugins.forEach((x) =>
+        copyTemplateFiles("plugins/" + x + "/", projectPath)
+      );
 
-      const importedList = listOfImports(listOfPlugins)
-      const listForRemplace = listOfPlugins.map( x => x + 'P')
+      const importedList = listOfImports(listOfPlugins);
+      const listForRemplace = listOfPlugins.map((x) => x + "P");
 
       switch (answers.installationChoice) {
         case "pug":
           replaceOptionsAndImports(
             projectPath,
-            importedList + 'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
+            importedList +
+              'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as pugModule  from "pug";\n' +
               "const fromPug = pug(pugModule)",
             `,
@@ -203,7 +206,7 @@ const staticServer = {
         case "vanilla":
           replaceOptionsAndImports(
             projectPath,
-            importedList ,
+            importedList,
             "",
             `
 const staticServer = {
@@ -218,7 +221,8 @@ const staticServer = {
         case "ejs":
           replaceOptionsAndImports(
             projectPath,
-            importedList + 'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
+            importedList +
+              'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
               'import  * as ejsModule  from "ejs";\n' +
               "const fromEjs = ejs(ejsModule)",
             `,
@@ -238,8 +242,14 @@ const staticServer = {
       console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      console.log("\x1b[35m%s\x1b[0m", `For development: ${packageManager} run dev`);
-      console.log("\x1b[35m%s\x1b[0m", `For release: ${packageManager} run start`);
+      console.log(
+        "\x1b[35m%s\x1b[0m",
+        `For development: ${packageManager} run dev`,
+      );
+      console.log(
+        "\x1b[35m%s\x1b[0m",
+        `For release: ${packageManager} run start`,
+      );
       console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
     });
   });
@@ -309,18 +319,18 @@ function replaceOptionsAndImports(
   });
 }
 const listOfImports = (arr) =>
-  arr.reduce( (acc,v) =>  acc + 
-  'import ' + v +'P' +' from "./plugins/'+v+'.ts"\n' 
-  , '')
+  arr.reduce((acc, v) =>
+    acc +
+    "import " + v + "P" + ' from "./plugins/' + v + '.ts"\n', "");
 
-  function checkPackageManager(packageManager) {
-    return new Promise((resolve) => {
-      exec(`${packageManager} -v`, (error, stdout, stderr) => {
-        if (error) {
-          resolve(null); // Package manager not found
-        } else {
-          resolve(packageManager); // Return the version number
-        }
-      });
+function checkPackageManager(packageManager) {
+  return new Promise((resolve) => {
+    exec(`${packageManager} -v`, (error, stdout, stderr) => {
+      if (error) {
+        resolve(null); // Package manager not found
+      } else {
+        resolve(packageManager); // Return the version number
+      }
     });
-  }
+  });
+}

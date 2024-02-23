@@ -1,7 +1,7 @@
 {
   "imports": {
-    "vixeny":"https://deno.land/x/endofunctor@v0.0.922/main.ts",
-    "vixeny-prespective": "https://deno.land/x/vixeny_prespective@v0.2.3/main.ts",
+    "vixeny": "https://deno.land/x/endofunctor@v0.0.926/main.ts",
+    "vixeny-prespective": "https://deno.land/x/vixeny_prespective@v0.2.4/main.ts",
     "ejs": "npm:ejs",
     "pug": "npm:pug",
     "unified": "npm:unified",
@@ -13,6 +13,7 @@
     "postcss": "npm:postcss",
     "postcss-nested": "npm:postcss-nested",
     "autoprefixer": "npm:autoprefixer",
-    "sass": "npm:sass"
+    "sass": "npm:sass",
+    "esbuild": "npm:esbuild"
   }
 }

@@ -10,7 +10,7 @@ const globalOptions = {
     ? {
       enableLiveReloading: true as const,
     }
-    : {})
+    : {}),
   ///OPTIONS///
 };
 
