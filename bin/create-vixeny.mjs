@@ -16,7 +16,7 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which HTML template would you like?",
-    choices: ["vanilla", "pug", "ejs"],
+    choices: ["vanilla", "pug", "ejs",  "jsx" ],
   },
   {
     type: "list",
@@ -100,9 +100,7 @@ inquirer.prompt(questions).then((answers) => {
 
         packageJson.dependencies = {
           ...packageJson.dependencies,
-
           "vixeny-prespective": "latest",
-
           "esbuild": "^0.20.1",
         };
 
@@ -113,7 +111,13 @@ inquirer.prompt(questions).then((answers) => {
             "pug": "^3.0.2",
           };
         }
-
+        // react
+        if (answers.installationChoice === "tsx") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            "react": "^18.2.0",
+          };
+        }
         // ejs
         if (answers.installationChoice === "ejs") {
           packageJson.dependencies = {
@@ -217,6 +221,19 @@ const staticServer = {
   slashIs: "$main",
   template: [${listForRemplace.toString()}]};`,
           );
+      case "jsx":
+            replaceOptionsAndImports(
+              projectPath,
+              importedList,
+              "",
+              `
+  const staticServer = {
+    type: "fileServer",
+    name: "/",
+    path: "./views/public/",
+    slashIs: "$main",
+    template: [${listForRemplace.toString()}]};`,
+            );
           break;
         case "ejs":
           replaceOptionsAndImports(
