@@ -112,10 +112,11 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
         // react
-        if (answers.installationChoice === "tsx") {
+        if (answers.installationChoice === "jsx") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "react": "^18.2.0",
+            "react-dom": "^18.2.0",
           };
         }
         // ejs
