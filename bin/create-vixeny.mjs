@@ -16,7 +16,7 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which HTML template would you like?",
-    choices: ["vanilla", "pug", "ejs",  "jsx" ],
+    choices: ["vanilla", "pug", "ejs",  "jsx" , "tsx"],
   },
   {
     type: "list",
@@ -112,7 +112,7 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
         // react
-        if (answers.installationChoice === "jsx") {
+        if (answers.installationChoice === "jsx" || answers.installationChoice === "tsx") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "react": "^18.2.0",
@@ -223,6 +223,20 @@ const staticServer = {
   template: [${listForRemplace.toString()}]};`,
           );
       case "jsx":
+            replaceOptionsAndImports(
+              projectPath,
+              importedList,
+              "",
+              `
+  const staticServer = {
+    type: "fileServer",
+    name: "/",
+    path: "./views/public/",
+    slashIs: "$main",
+    template: [${listForRemplace.toString()}]};`,
+            );
+          break;
+          case "tsx":
             replaceOptionsAndImports(
               projectPath,
               importedList,

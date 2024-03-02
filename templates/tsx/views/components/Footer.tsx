@@ -1,7 +1,6 @@
-// Footter.jsx
 import React from 'react';
 
-const Footer = () => (
+const Footer: React.FC = () => (
   <footer>
     <p>&copy; 2024 create-vixeny.</p>
   </footer>

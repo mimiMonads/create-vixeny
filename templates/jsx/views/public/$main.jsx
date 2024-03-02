@@ -5,6 +5,9 @@ import Footer from '../components/Footer.jsx';
 
 const MainPage = () => (
   <>
+    <head>
+      <link rel="stylesheet" href="/css/main.css" />
+    </head>
     <Header />
     <main>
       <h1>Welcome to Our Website</h1>
