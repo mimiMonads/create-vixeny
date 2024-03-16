@@ -24,14 +24,14 @@ const questions = [
     message: "which CSS engine is wanted?",
     choices: ["vanilla", "postcss", "sass"],
   },
-  {
-    type: "checkbox",
-    name: "plugins",
-    message: "Would you like to include any extra plugins?",
-    choices: [
-      { name: "remark", value: "remark" },
-    ],
-  },
+  // {
+  //   type: "checkbox",
+  //   name: "plugins",
+  //   message: "Would you like to include any extra plugins?",
+  //   choices: [
+  //     { name: "remark", value: "remark" },
+  //   ],
+  // },
   {
     type: "list",
     name: "runtime",
@@ -101,10 +101,6 @@ inquirer.prompt(questions).then((answers) => {
           "remark-parse": "^11.0.0",
           "remark-rehype": "^11.1.0",
           "unified": "^11.0.4",
-        };
-
-        packageJson.dependencies = {
-          ...packageJson.dependencies,
           "vixeny-prespective": "latest",
           "esbuild": "^0.20.1",
         };
@@ -166,7 +162,7 @@ inquirer.prompt(questions).then((answers) => {
         answers.style,
         "typescript",
         "remark",
-        ...answers?.plugins ?? [],
+        //...answers?.plugins ?? [],
       ]
         .filter((x) => x !== "vanilla");
 
