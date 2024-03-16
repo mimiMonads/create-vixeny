@@ -96,6 +96,11 @@ inquirer.prompt(questions).then((answers) => {
           ...packageJson.dependencies,
           "vixeny": "latest", // Assuming you want the latest version
           "chokidar": "^3.6.0",
+          "rehype-format": "^5.0.0",
+          "rehype-stringify": "^10.0.0",
+          "remark-parse": "^11.0.0",
+          "remark-rehype": "^11.1.0",
+          "unified": "^11.0.4",
         };
 
         packageJson.dependencies = {
@@ -127,17 +132,6 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
 
-        if (answers.plugins.includes("remark")) {
-          packageJson.dependencies = {
-            ...packageJson.dependencies,
-            "rehype-document": "^7.0.3",
-            "rehype-format": "^5.0.0",
-            "rehype-stringify": "^10.0.0",
-            "remark-parse": "^11.0.0",
-            "remark-rehype": "^11.1.0",
-            "unified": "^11.0.4",
-          };
-        }
 
         if (answers.style === "sass") {
           packageJson.dependencies = {
@@ -171,7 +165,8 @@ inquirer.prompt(questions).then((answers) => {
         answers.installationChoice,
         answers.style,
         "typescript",
-        ...answers.plugins,
+        "remark",
+        ...answers?.plugins ?? [],
       ]
         .filter((x) => x !== "vanilla");
 
@@ -205,7 +200,8 @@ const staticServer = {
   path: "./views/public/",
   slashIs: "$main",
   //it has options
-  template: [${listForRemplace.toString()}]};`,
+  template: [${listForRemplace.toString()}]
+};`,
           );
           break;
         case "vanilla":
@@ -220,7 +216,8 @@ const staticServer = {
   path: "./views/public/",
   removeExtensionOf: [".html"],
   slashIs: "$main",
-  template: [${listForRemplace.toString()}]};`,
+  template: [${listForRemplace.toString()}]
+};`,
           );
       case "jsx":
             replaceOptionsAndImports(
