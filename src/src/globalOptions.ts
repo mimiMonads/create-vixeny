@@ -1,11 +1,10 @@
-import { assertOptions } from "vixeny";
-import parser from "vixeny/components/runtime/parseArguments.mjs";
+import { plugins,  runtime } from "vixeny";
 
 ///IMPORTS///
 
 ///remark//
 
-const values = parser();
+const values = runtime.arguments();
 
 const globalOptions = {
   hasName: "http://localhost:3000/",
@@ -23,7 +22,7 @@ const cryptoKey = {
 
 ///STATICSERVER///
 
-assertOptions(globalOptions);
+plugins.assertOptions(globalOptions);
 
 
 export { cryptoKey, globalOptions, staticServer };

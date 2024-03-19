@@ -182,10 +182,10 @@ inquirer.prompt(questions).then((answers) => {
           replaceOptionsAndImports(
             projectPath,
             importedList +
-              'import { pug , pugStaticServerPlugin } from "vixeny-prespective";\n' +
+              'import { pug } from "vixeny-prespective";\n' +
               'import  * as pugModule  from "pug";\n' +
               "const fromPug = pug(pugModule)",
-            `,
+            `
 cyclePlugin: {
   ...fromPug,
 },`,

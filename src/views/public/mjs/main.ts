@@ -1,3 +1,3 @@
-import { updateFooterWithCurrentTime } from "../../scripts/addFotter.ts";
+import { updateFooterWithCurrentTime } from "../../scripts/addFooter.ts";
 
 updateFooterWithCurrentTime();

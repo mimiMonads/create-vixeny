@@ -28,6 +28,11 @@
     }
   }
   
+  body {
+    margin: 10;
+    padding: 10;
+  }
+  
   footer {
     background-color: var(--background-color-secondary);
     color: var(--text-color-secondary);

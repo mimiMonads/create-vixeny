@@ -37,6 +37,11 @@ body, html {
     padding: 20px;
   }
 
+  body {
+    margin: 10;
+    padding: 10;
+  }
+  
   /* Image centering */
   .centered-img {
     display: block;
