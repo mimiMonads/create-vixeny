@@ -1,4 +1,4 @@
-import { plugins,  runtime } from "vixeny";
+import { plugins, runtime } from "vixeny";
 
 ///IMPORTS///
 
@@ -23,6 +23,5 @@ const cryptoKey = {
 ///STATICSERVER///
 
 plugins.assertOptions(globalOptions);
-
 
 export { cryptoKey, globalOptions, staticServer };

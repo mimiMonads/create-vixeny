@@ -1,7 +1,5 @@
 export const updateFooterWithCurrentTime = () => {
- 
   const now = new Date();
-
 
   const formattedDateTime = now.toLocaleString("default", {
     year: "numeric",

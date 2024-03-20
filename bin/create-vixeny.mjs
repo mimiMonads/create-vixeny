@@ -16,7 +16,7 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which HTML template would you like?",
-    choices: ["vanilla", "pug", "ejs",  "jsx" , "tsx"],
+    choices: ["vanilla", "pug", "ejs", "jsx", "tsx"],
   },
   {
     type: "list",
@@ -113,7 +113,10 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
         // react
-        if (answers.installationChoice === "jsx" || answers.installationChoice === "tsx") {
+        if (
+          answers.installationChoice === "jsx" ||
+          answers.installationChoice === "tsx"
+        ) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "react": "^18.2.0",
@@ -127,7 +130,6 @@ inquirer.prompt(questions).then((answers) => {
             "ejs": "^3.1.9",
           };
         }
-
 
         if (answers.style === "sass") {
           packageJson.dependencies = {
@@ -215,33 +217,33 @@ const staticServer = {
   template: [${listForRemplace.toString()}]
 };`,
           );
-      case "jsx":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList,
-              "",
-              `
+        case "jsx":
+          replaceOptionsAndImports(
+            projectPath,
+            importedList,
+            "",
+            `
   const staticServer = {
     type: "fileServer",
     name: "/",
     path: "./views/public/",
     slashIs: "$main",
     template: [${listForRemplace.toString()}]};`,
-            );
+          );
           break;
-          case "tsx":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList,
-              "",
-              `
+        case "tsx":
+          replaceOptionsAndImports(
+            projectPath,
+            importedList,
+            "",
+            `
   const staticServer = {
     type: "fileServer",
     name: "/",
     path: "./views/public/",
     slashIs: "$main",
     template: [${listForRemplace.toString()}]};`,
-            );
+          );
           break;
         case "ejs":
           replaceOptionsAndImports(

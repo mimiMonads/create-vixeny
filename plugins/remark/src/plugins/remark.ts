@@ -10,8 +10,8 @@ export default remarkStaticServer(unified)({
   preserveExtension: false,
   uses: [
     [remarkParse] as PluginTuple,
-    [remarkRehype , {allowDangerousHtml: true}] as unknown as PluginTuple,
+    [remarkRehype, { allowDangerousHtml: true }] as unknown as PluginTuple,
     [rehypeFormat] as unknown as PluginTuple,
-    [rehypeStringify , {allowDangerousHtml: true}] as unknown as PluginTuple,
-  ] ,
+    [rehypeStringify, { allowDangerousHtml: true }] as unknown as PluginTuple,
+  ],
 });

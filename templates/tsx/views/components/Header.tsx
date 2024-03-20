@@ -1,11 +1,20 @@
-import React from 'react';
+import React from "react";
 
 const Header: React.FC = () => (
   <header>
     <nav>
-      <a href="/" style={{ color: 'white', textDecoration: 'none', margin: '0 15px' }}>Home</a>
-      <a href="/docs" style={{ color: 'white', textDecoration: 'none', margin: '0 15px' }}>Docs</a>
-      
+      <a
+        href="/"
+        style={{ color: "white", textDecoration: "none", margin: "0 15px" }}
+      >
+        Home
+      </a>
+      <a
+        href="/docs"
+        style={{ color: "white", textDecoration: "none", margin: "0 15px" }}
+      >
+        Docs
+      </a>
     </nav>
   </header>
 );
