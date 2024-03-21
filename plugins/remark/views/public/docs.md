@@ -4,141 +4,302 @@
     <script src="/mjs/docs.mjs" type="module"></script>
 </head>
 
-# Hello word
 
-<Heading title="Introduction to wrap" size="2" />
+1. [Introduction to `create-vixeny`](#introduction-to-create-vixeny)
+   - [Petitions](#petitions)
+   - [Wrap](#wrap)
+     - [Debugging](#debugging)
+     - [Testing](#testing)
+     - [Mocking](#mocking)
+     - [Join](#join)
+2. [Resolution](#resolution)
+   - [Morphism](#morphism)
+3. [Resolve Properties](#resolve-properties)
+   - [Resolution](#resolution-1)
+   - [SyncAgnostic](#syncagnostic)
+   - [Composable and Reusable](#composable-and-reusable)
+4. [Optimizer](#optimizer)
 
-In the `versatile` world of JavaScript, wrap plays a key role in harmonizing the
-language's polymorphic nature with Vixeny's functional approach. It ensures
-scalability and maintains code purity, crucial for efficient web development.
 
-```ts
-// name of this file: api.ts
-import { wrap } from "vixeny";
-//routing options
-import { options } from "somewhere.ts";
 
-const api = wrap({
-  //setting up options
-  ...options,
-  startWith: "/api",
-})()
-  //creating a petition
-  .stdPetition({
-    path: "/ping",
-    f: () => "pong",
-  });
 
-export { api };
+# Introduction to `create-vixeny`
+
+Welcome to the `create-vixeny` documentation. Our aim is to provide you with practical guidance on using Vixeny, focusing more on its application than on the underlying mechanics. In this introductory section, we'll clarify some fundamental concepts essential for working with Vixeny.
+
+## Petitions
+
+In Vixeny, routes are referred to as "petitions." These are objects that necessitate a function, denoted as `f` (or "functor"), and a `path`. The example below illustrates how to define a basic petition:
+
+```javascript
+petitionHandler({
+  path: "/",
+  f: () => "helloWorld",
+});
 ```
 
-Simplifing handling diverse HTTP requests, offering a structured,
-side-effect-free programming environment. This makes building, maintaining, and
-scaling web applications more intuitive and manageable, showcasing wrap as an
-essential tool in the Vixeny toolkit.
+## Wrap
 
-```ts
-import { vixeny, wrap } from "vixeny";
-import { options } from "somewhere.ts";
-import { api } from "api.ts";
+The `wrap` function is a pure function designed to facilitate the handling and manipulation of petitions. It allows you to configure options, define standard petitions, and incorporate a suite of tools for debugging, testing, and more. Here's an example of exporting a standard petition using `wrap`:
 
-const router = wrap(options)()
+```javascript
+const options = {...}; // Optional configuration
+
+// Exporting a standard Petition
+export const root = wrap(options)()
   .stdPetition({
     path: "/",
-    f: () => "hello world",
+    f: () => "helloWorld",
+  });
+```
+
+### Debugging
+
+With `wrap`, you can easily inspect the current state at any point between methods:
+
+```javascript
+wrap()()
+  .stdPetition({
+    path: '/one',
+    f: () => null
   })
-  //joining `api` to this wrap
-  .union(api.unwrap())
-  // console logging:
-  // outputs: '/'
-  //          '/api/ping'
+  // Logging the paths after adding the first petition:
+  .logPaths()
+  .stdPetition({
+    path: '/two',
+    f: () => null
+  })
+  // Logging the paths after adding the second petition:
   .logPaths();
-
-// unwrapping all the petitions giving them to the router
-vixeny(options)(router.unwrap());
 ```
 
-<Heading title="Working with petitions" size="2" />
+### Testing
 
-Let's create a Petition without wrap and export it an create new differents
-routes out of it.
+Vixeny can be tested without the need for a server, allowing for individual or comprehensive testing of wraps:
 
-```ts
-import { Petition } from "vixeny/optimizer/types";
+```javascript
+// Assuming `wrap` has been configured with multiple petitions
+const server = wrap(...)...
+const testServer = server.testRequests();
 
-const surprise: Petition = {
-  path: "/meow",
-  headings: {
-    status: 307,
-    statusText: "Temporary Redirect",
-    headers: {
-      Location: "https://www.youtube.com/watch?v=_e9yMqmXWo0",
+// Simulate requests and test responses
+testServer(new Request("/some-path")).then(response => {
+  // Perform assertions or checks on the response
+});
+```
+
+### Mocking
+
+Vixeny supports testing individual petitions by injecting values while preserving their structure:
+
+```javascript
+const request = new Request("http://localhost/one");
+const paths = wrap()()
+  .stdPetition({
+    path: '/one',
+    f: c => c.date.toString()
+  });
+
+// Handling the request without modifications
+const handles = paths.handleRequest("/one")({});
+
+// Handling the request with a mock date injected
+const mocked = paths.handleRequest("/one")({
+  options: {
+    setDate: 1710592645075
+  }
+});
+
+// Outputs the current date
+console.log(await handles(request).then(r => r.text()));
+
+// Outputs the mocked date: "1710592645075"
+console.log(await mocked(request).then(r => r.text()));
+```
+
+### Join
+
+You can combine petitions from another `wrap` instance with the current one, allowing for the reuse of petitions across different parts of your application:
+
+```javascript
+// Assuming `extension` is imported from "extension.ts"
+export default wrap()()
+  .union(extension.unwrap())
+  .stdPetition({
+    path: "/hello",
+    f: () => "helloWorld",
+  })
+  .logPaths(); // Outputs paths from both the current wrap and the imported `extension`.
+```
+
+Vixeny is fully typed, with JSDoc examples provided for ease of use. Hover over the code in your IDE to check.
+
+# Resolution
+
+Unlike traditional frameworks that rely on life cycles for code execution and rendering management, Vixeny employs a concept called "resolution." A resolution is defined as the chaining of any morphism by its resolver.
+
+## Morphism
+
+The most fundamental type in Vixeny is a "morphism." All petitions using the optimizer, `resolve`, or `branch` are considered morphisms. Vixeny provides a function to help type these objects:
+
+```javascript
+//resolve
+const hello = morphism(options)(
+  {
+    resolve: {
+	// nested resolve
+      nested: {
+        f: () => "hello",
+      },
     },
+    f: (f) => f.resolve.nested,
   },
-  f: (c) => "",
-};
-
-export { surprise };
+);
 ```
 
-In another file:
+> Any `resolve` or `branch` can be utilized within a morphism
 
-```ts
-import { surprise } from "somewhere.ts";
+## Resolve Properties
 
-export default wrap(options)()
-  .stdPetition(surprise)
-  .stdPetition({ ...surprise, path: "/woof" })
-  .stdPetition({ ...surprise, path: "/woooow" })
-  // console logging:
-  // outputs: '/meow'
-  //          '/woof'
-  //          '/woooow'
-  .logPaths();
-```
+Vixeny's resolution mechanism ensures that data dependencies are resolved before the main function is executed. This feature enhances the framework's efficiency and developer experience by simplifying asynchronous data handling. Below, we explore key properties of resolution in Vixeny.
 
-Applies to any other key in the object.
+### Resolution
 
-<Heading title="Petitions types in wrap" size="2" />
+The resolution process guarantees that all necessary data is fetched and available for use within your petitions. This feature is pivotal for managing data dependencies seamlessly:
 
-There are two type of petitions:
-
-- `stdPetition`: where you have to return a `BodyInt` or `Promise<BodyInt>`
-- `customPetition`: where you have to return a `Response` or `Promise<Response>`
-
-```ts
+```javascript
 wrap(options)()
   .stdPetition({
-    path: "/",
-    f: () => "hello world",
-  })
-  .customPetition({
-    path: "/response/who/:name",
-    f: (c) => new Response(c.param.name),
+    path: "/withResolve",
+    resolve: {
+      hi: { f: () => "Hello world" },
+    },
+    f: (ctx) => ctx.resolve.hi,
   });
 ```
 
-It is important to note that `wrap` only supports these types although there are
-more types which serve different purposes which must be directly inserted.
+### SyncAgnostic
 
-```ts
-vixeny(options)([
-  //importing all the paths
-  ...wrap(options)()
-    .union(root.unwrap())
-    .union(api.unwrap())
-    .unwrap(),
-  //adding the static server
-  {
-    type: "fileServer",
-    path: "./public/",
-    name: "/public/",
-  },
-  // petition without ctx
-  {
-    path: "/responseType",
-    type: "response",
-    r: () => new Response("Hello"),
-  },
-]);
+Vixeny's design ensures that the signature of your function, `f`, remains unaffected by whether its dependencies, declared in `resolve`, are synchronous or asynchronous. This allows for greater flexibility and simplicity in defining your application's logic:
+
+```javascript
+wrap(options)()
+  .stdPetition({
+    path: "/helloWorld",
+    resolve: {
+      hello: { async f: () => await Promise.resolve("Hello") },
+      world: { f: () => 'world' }
+    },
+    f: ctx => `${ctx.resolve.hello} ${ctx.resolve.world}`,
+  });
 ```
+
+This design also simplifies the process of mocking dependencies for testing purposes, as shown below:
+
+```javascript
+// Define the original asynchronous resolve function for fetching weather data
+const routes = wrap(options)()
+  .stdPetition({
+    path: "/weather",
+    resolve: {
+      currentWeather: {
+        async f: () => await fetch("https://api.weather.com/current").then(res => res.json())
+      }
+    },
+    f: (c) => c.resolve.currentWeather.temperature > 75 ? "It's warm outside" : "It's cool outside"
+  });
+
+// Mock the resolve function for testing
+const mockedWeatherResolve = () => ({ temperature: 80 });
+
+// Inject the mocked resolve
+const mockRoutes = routes.handleRequest("/weather")({
+  resolve: {
+    currentWeather: mockedWeatherResolve
+  }
+});
+
+// Test the behavior with mocked data
+test("/weather", async () => {
+  expect(
+    await mockRoutes(new Request("/weather")).then(res => res.text())
+  ).toStrictEqual("It's warm outside");
+});
+```
+
+### Composable and Reusable
+
+The resolution mechanism allows for the reuse and on-the-fly modification of any morphism, making your code more modular and maintainable:
+
+```javascript
+// Define a morphism
+const hello = morphism(options)({
+  resolve: {
+    nested: {
+      f: () => "hello",
+    },
+  },
+  f: (f) => f.resolve.nested,
+});
+
+const serve = wrap(options)()
+  .stdPetition({
+    path: "/one",
+    resolve: {
+      hello: hello,
+    },
+    f: (f) => f.resolve.hello,
+  })
+  .stdPetition({
+    path: "/two",
+    resolve: {
+      otherName: hello,
+    },
+    f: (f) => f.resolve.otherName,
+  });
+```
+
+> This feature underscores the importance of utilizing `morphism` to ensure type safety within your functions.
+
+# Optimizer
+
+The `optimizer` in Vixeny plays a crucial role by overseeing the `CTX` within functions, composing petitions, chaining `resolve` and `branch`, and efficiently handling both asynchronous and synchronous operations. But what exactly does this entail? Let's delve into the concept of `CTX` and its role in TypeScript, which exposes all native functions (including plugins, not covered here):
+
+```typescript
+export default wrap()()
+  .stdPetition({
+    path: "/",
+    f: () => "helloWorld",
+  })
+  // Console logging
+  .logLastCheck()
+  .stdPetition({
+    path: "/hello/:id",
+    f: (c) => c.param.id,
+  })
+  // Console logging
+  .logLastCheck();
+```
+
+The optimizer analyzes your petitions and selectively adds only the necessary elements to the `CTX`. This process ensures optimal performance and cleaner code by avoiding unnecessary inclusions. However, the optimizer's automated nature means it might not automatically include external function requirements. You can manually specify these as needed:
+
+```typescript
+export default wrap()()
+  .stdPetition({
+    path: "/hello/query1",
+    f: (c) => functionOutsideOfContext(c),
+  })
+  // Console logging
+  .logLastCheck()
+  .stdPetition({
+    path: "/hello/query2",
+    f: (c) => functionOutsideOfContext(c),
+    options: {
+      add: ["query"],
+    },
+  })
+  // Console logging
+  .logLastCheck();
+```
+
+Customization options include `only`, which bypasses the optimizer to add only specified functions; `add`, which includes additional functions; and `remove`, which excludes
