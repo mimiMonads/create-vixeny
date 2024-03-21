@@ -40,7 +40,8 @@ petitionHandler({
 
 ## Wrap
 
-The `wrap` function is a pure function designed to facilitate the handling and manipulation of petitions. It allows you to configure options, define standard petitions, and incorporate a suite of tools for debugging, testing, and more. Here's an example of exporting a standard petition using `wrap`:
+The `wrap` function is a pure function designed to facilitate the handling and manipulation of petitions. It allows you to configure options, and incorporate a suite of tools for debugging, testing, and more.
+
 
 ```javascript
 const options = {...}; // Optional configuration
@@ -163,9 +164,10 @@ const hello = morphism(options)(
 
 Vixeny's resolution mechanism ensures that data dependencies are resolved before the main function is executed. This feature enhances the framework's efficiency and developer experience by simplifying asynchronous data handling. Below, we explore key properties of resolution in Vixeny.
 
-### Resolution
+### Resolves
 
-The resolution process guarantees that all necessary data is fetched and available for use within your petitions. This feature is pivotal for managing data dependencies seamlessly:
+The resolution process guarantees that all necessary data is fetched and available for use within your petitions.
+
 
 ```javascript
 wrap(options)()
@@ -271,13 +273,13 @@ export default wrap()()
     path: "/",
     f: () => "helloWorld",
   })
-  // Console logging
+  // Console logging: []
   .logLastCheck()
   .stdPetition({
     path: "/hello/:id",
     f: (c) => c.param.id,
   })
-  // Console logging
+  // Console logging: ["param"]
   .logLastCheck();
 ```
 
@@ -289,7 +291,7 @@ export default wrap()()
     path: "/hello/query1",
     f: (c) => functionOutsideOfContext(c),
   })
-  // Console logging
+  // Console logging: []
   .logLastCheck()
   .stdPetition({
     path: "/hello/query2",
@@ -298,7 +300,7 @@ export default wrap()()
       add: ["query"],
     },
   })
-  // Console logging
+  // Console logging: ["query"]
   .logLastCheck();
 ```
 

@@ -13,7 +13,9 @@ const globalOptions = {
       enableLiveReloading: true as const,
     }
     : {}),
+
   ///OPTIONS///
+  
 };
 
 const cryptoKey = {

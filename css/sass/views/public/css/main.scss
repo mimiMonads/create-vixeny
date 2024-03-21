@@ -1,52 +1,70 @@
-/* Define variables for colors */
-:root {
-  --background-color-main: #2C2A4A; /* Dark purple background */
-  --text-color-main: #C7C5F4; /* Light purple text */
-  --background-color-secondary: #1E1C36; /* Darker purple */
-  --text-color-secondary: white;
-}
+$dark-purple-bg: #2C2A4A;
+$darker-purple-bg: #1E1C36;
+$light-purple-text: #C7C5F4;
+$contrast-purple-bg: #423F61;
+$orange-text: #FFA500;
+$font-family-default: 'Arial', sans-serif;
 
 body, html {
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: var(--background-color-main);
-  color: var(--text-color-main);
+  font-family: $font-family-default;
+  background-color: $dark-purple-bg;
+  color: $light-purple-text;
+  line-height: 1.6;
+  
+  // Nested body rules
+  body {
+    margin: 10px;
+    padding: 10px;
+  }
 }
-
-body {
-  margin: 10;
-  padding: 10;
-}
-
 
 header {
-  background-color: var(--background-color-secondary);
-  color: var(--text-color-secondary);
-  padding: 10px 0;
+  background-color: $darker-purple-bg;
+  color: white;
+  padding: 20px 0;
   text-align: center;
 
-  /* Example of nested rule with PostCSS using a plugin like postcss-nested */
   a {
-    color: var(--text-color-secondary);
+    color: white;
     margin: 0 15px;
     text-decoration: none;
+    font-weight: bold;
   }
 }
 
 footer {
-  background-color: var(--background-color-secondary);
-  color: var(--text-color-secondary);
+  background-color: $darker-purple-bg;
+  color: white;
   text-align: center;
-  padding: 10px 0;
+  padding: 20px 0;
   position: fixed;
   bottom: 0;
   width: 100%;
 }
 
 main {
-  text-align: center;
+  text-align: left;
   padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+
+code {
+  background-color: $contrast-purple-bg;
+  color: $orange-text;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+blockquote {
+  border-left: 3px solid $orange-text;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  color: #FFF;
+  background: $contrast-purple-bg;
 }
 
 .centered-img {
@@ -54,4 +72,41 @@ main {
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+
+a {
+  color: $orange-text;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $orange-text;
+}
+
+ul, ol {
+  padding-left: 20px;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  
+  th, td {
+    border: 1px solid $light-purple-text;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: $contrast-purple-bg;
+    color: $orange-text;
+  }
 }

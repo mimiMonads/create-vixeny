@@ -262,7 +262,8 @@ const staticServer = {
   name: "/",
   path: "./views/public/",
   slashIs: "$main",
-  template: [${listForRemplace.toString()}]};`,
+  template: [${listForRemplace.toString()}],
+};`,
           );
           break;
       }

@@ -1,51 +1,115 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #2C2A4A; /* Dark purple background */
-    color: #C7C5F4; /* Light purple text */
-  }
+body , html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #2C2A4A; /* Dark purple background */
+  color: #C7C5F4; /* Light purple text */
+  line-height: 1.6; /* Improved line spacing */
+}
 
-  /* Header styling */
-  header {
-    background-color: #1E1C36; /* Darker purple */
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-  }
+body {
+  margin: 10;
+  padding: 10;
+}
 
-  header a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-  }
+/* Header styling */
+header {
+  background-color: #1E1C36; /* Darker purple */
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
 
-  /* Footer styling */
-  footer {
-    background-color: #1E1C36; /* Darker purple */
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
+header a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: bold; /* Make navigation items pop */
+}
 
-  /* Main content styling */
-  main {
-    text-align: center;
-    padding: 20px;
-  }
+/* Footer styling */
+footer {
+  background-color: #1E1C36; /* Darker purple */
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
 
-  body {
-    margin: 10;
-    padding: 10;
-  }
-  
-  /* Image centering */
-  .centered-img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%; /* Adjust this value based on your preference */
-  }
+/* Main content styling */
+main {
+  text-align: left; /* Left align for better readability */
+  padding: 20px;
+  max-width: 800px; /* Optimal line length for reading */
+  margin: auto; /* Center the content */
+}
+
+/* Code styling for better highlighting */
+code {
+  background-color: #423F61; /* Slightly lighter purple for contrast */
+  color: #FFA500; /* Orange text for code */
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace; /* Monospaced font for code */
+}
+
+/* Blockquotes for emphasis */
+blockquote {
+  border-left: 3px solid #FFA500; /* Orange accent on the side */
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  color: #FFF; /* Brighter text for contrast */
+  background: #423F61; /* Matching the code background */
+}
+
+/* Image centering */
+.centered-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%; /* Adjust this value based on your preference */
+}
+
+/* Improve readability for links */
+a {
+  color: #FFA500; /* Orange links for better visibility */
+  text-decoration: none; /* No underline for links */
+}
+
+/* Enhance the appearance of headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #FFA500; /* Orange text for headings */
+}
+
+/* Style lists for better readability */
+ul, ol {
+  padding-left: 20px; /* Indent list items */
+}
+
+ul a, ol a {
+  text-decoration: none; /* No underline for list links */
+}
+
+/* Ensure paragraphs have bottom margin for spacing */
+p {
+  margin-bottom: 1em;
+}
+
+/* Enhance table appearance */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th, table td {
+  border: 1px solid #C7C5F4; /* Light purple border for table cells */
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #423F61; /* Header background */
+  color: #FFA500; /* Orange text for headers */
+}

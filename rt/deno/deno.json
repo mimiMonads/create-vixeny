@@ -1,11 +1,10 @@
 {
   "imports": {
-    "vixeny": "https://deno.land/x/endofunctor@v0.0.932/main.ts",
+    "vixeny": "https://deno.land/x/endofunctor@v0.0.950/main.ts",
     "vixeny-prespective": "https://deno.land/x/vixeny_prespective@v0.2.8/main.ts",
     "ejs": "npm:ejs",
     "pug": "npm:pug",
     "unified": "npm:unified",
-    "rehype-document": "https://esm.sh/rehype-document",
     "rehype-format": "https://esm.sh/rehype-format",
     "rehype-stringify": "https://esm.sh/rehype-stringify",
     "remark-parse": "https://esm.sh/remark-parse",
