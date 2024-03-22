@@ -5,6 +5,27 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+console.log(
+  "\x1b[31m%s\x1b[0m" +  // Red for V
+  "\x1b[32m%s\x1b[0m" +  // Green for i
+  "\x1b[33m%s\x1b[0m" +  // Yellow for x
+  "\x1b[34m%s\x1b[0m" +  // Blue for e
+  "\x1b[35m%s\x1b[0m" +  // Magenta for n
+  "\x1b[36m%s\x1b[0m",   // Cyan for y
+  "V", "i", "x", "e", "n", "y"
+);
+
+
+
+let plugins = [
+  { name: "tsx", value: "tsx" },
+  { name: "jsx", value: "jsx" },
+  { name: "ejs", value: "ejs" },
+  { name: "pug", value: "pug" },
+  { name: "postcss", value: "postcss" },
+  { name: "sass", value: "sass" },
+]
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageManager = await checkPackageManager("npm") ??
@@ -16,22 +37,20 @@ const questions = [
     type: "list",
     name: "installationChoice",
     message: "Welcome to Vixeny!, Which HTML template would you like?",
-    choices: ["vanilla", "pug", "ejs", "jsx", "tsx"],
+    choices: ["vanilla", "pug", "ejs", "jsx", "tsx"]
   },
   {
     type: "list",
     name: "style",
     message: "which CSS engine is wanted?",
-    choices: ["vanilla", "postcss", "sass"],
+    choices: ["vanilla", "postcss", "sass"]
   },
-  // {
-  //   type: "checkbox",
-  //   name: "plugins",
-  //   message: "Would you like to include any extra plugins?",
-  //   choices: [
-  //     { name: "remark", value: "remark" },
-  //   ],
-  // },
+  {
+    type: "checkbox",
+    name: "plugins",
+    message: "Would you like to include any extra plugins?",
+    choices: plugins
+  },
   {
     type: "list",
     name: "runtime",
@@ -106,7 +125,7 @@ inquirer.prompt(questions).then((answers) => {
         };
 
         // pug
-        if (answers.installationChoice === "pug") {
+        if (answers.installationChoice === "pug" || answers.plugins.find( x => x === "pug")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "pug": "^3.0.2",
@@ -115,7 +134,8 @@ inquirer.prompt(questions).then((answers) => {
         // react
         if (
           answers.installationChoice === "jsx" ||
-          answers.installationChoice === "tsx"
+          answers.installationChoice === "tsx" ||
+          answers.plugins.find( x => x === "jsx" || x === "tsx")
         ) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
@@ -124,21 +144,21 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
         // ejs
-        if (answers.installationChoice === "ejs") {
+        if (answers.installationChoice === "ejs" || answers.plugins.find( x => x === "ejs" )) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "ejs": "^3.1.9",
           };
         }
 
-        if (answers.style === "sass") {
+        if (answers.style === "sass"  || answers.plugins.find( x => x === "sass")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "sass": "^1.71.0",
           };
         }
 
-        if (answers.style === "postcss") {
+        if (answers.style === "postcss" || answers.plugins.find( x => x === "postcss")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "autoprefixer": "^10.4.17",
@@ -164,7 +184,7 @@ inquirer.prompt(questions).then((answers) => {
         answers.style,
         "typescript",
         "remark",
-        //...answers?.plugins ?? [],
+        ...answers?.plugins ?? [],
       ]
         .filter((x) => x !== "vanilla");
 
@@ -267,7 +287,6 @@ const staticServer = {
           );
           break;
       }
-      console.log("\x1b[36m%s\x1b[0m", "Configuring Vixeny dependencies...");
       console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
       console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
       console.log(

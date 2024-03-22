@@ -29,7 +29,7 @@ Welcome to the `create-vixeny` documentation. Our aim is to provide you with pra
 
 ## Petitions
 
-In Vixeny, routes are referred to as "petitions." These are objects that necessitate a function, denoted as `f` (or "functor"), and a `path`. The example below illustrates how to define a basic petition:
+In Vixeny, routes are referred to as "petitions." These are objects that necessitate a function, denoted as `f`, and a `path`. The example below illustrates how to define a basic petition:
 
 ```javascript
 petitionHandler({
@@ -40,7 +40,7 @@ petitionHandler({
 
 ## Wrap
 
-The `wrap` function is a pure function designed to facilitate the handling and manipulation of petitions. It allows you to configure options, and incorporate a suite of tools for debugging, testing, and more.
+The `wrap` is a pure function designed to facilitate the handling and manipulation of petitions. It allows you to configure options, and incorporate a suite of tools for debugging, testing, and more.
 
 
 ```javascript
@@ -137,7 +137,9 @@ Vixeny is fully typed, with JSDoc examples provided for ease of use. Hover over 
 
 # Resolution
 
-Unlike traditional frameworks that rely on life cycles for code execution and rendering management, Vixeny employs a concept called "resolution." A resolution is defined as the chaining of any morphism by its resolver.
+Unlike traditional frameworks that rely on life cycles for code execution and rendering management, Vixeny employs a concept called "resolution." A resolution is defined as: 
+
+> The chaining of any morphism by its resolver.
 
 ## Morphism
 
@@ -182,7 +184,7 @@ wrap(options)()
 
 ### SyncAgnostic
 
-Vixeny's design ensures that the signature of your function, `f`, remains unaffected by whether its dependencies, declared in `resolve`, are synchronous or asynchronous. This allows for greater flexibility and simplicity in defining your application's logic:
+Vixeny's design ensures that the signature of your functor (function), `f`, remains unaffected by whether its dependencies, declared in `resolve`, are synchronous or asynchronous. This allows for greater flexibility and simplicity in defining your application's logic:
 
 ```javascript
 wrap(options)()
@@ -195,6 +197,8 @@ wrap(options)()
     f: ctx => `${ctx.resolve.hello} ${ctx.resolve.world}`,
   });
 ```
+
+### Mockable
 
 This design also simplifies the process of mocking dependencies for testing purposes, as shown below:
 
@@ -305,3 +309,5 @@ export default wrap()()
 ```
 
 Customization options include `only`, which bypasses the optimizer to add only specified functions; `add`, which includes additional functions; and `remove`, which excludes
+
+
