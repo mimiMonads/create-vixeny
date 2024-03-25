@@ -1,5 +1,5 @@
 let currentProcess = new Deno.run({
-  cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
+  cmd: [Deno.execPath(), "run", "-A",  "--unstable-ffi", "main.ts", "--liveReloading"],
   stdout: "inherit",
   stderr: "inherit",
 });
@@ -17,7 +17,7 @@ async function runDenoProcess() {
   await killAndAwaitProcess(); // Ensure the previous process is fully terminated
 
   currentProcess = new Deno.run({
-    cmd: [Deno.execPath(), "run", "-A", "main.ts", "--liveReloading"],
+    cmd: [Deno.execPath(), "run", "-A",  "--unstable-ffi", "main.ts", "--liveReloading"],
     stdout: "inherit",
     stderr: "inherit",
   });

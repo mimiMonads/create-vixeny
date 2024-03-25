@@ -121,10 +121,10 @@ inquirer.prompt(questions).then((answers) => {
       packageJson.scripts = {
         ...packageJson.scripts,
         start: answers.runtime === "deno"
-          ? "deno run -A main.ts"
+          ? "deno run -A --unstable-ffi main.ts"
           : "bun run main.ts",
         dev: answers.runtime === "deno"
-          ? "deno run -A  watcher.mjs --liveReloading "
+          ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
           : "bun run watcher.mjs",
       };
 
