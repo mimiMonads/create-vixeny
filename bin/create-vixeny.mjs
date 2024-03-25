@@ -321,6 +321,9 @@ const fileServer = {
         );
       } else {
         console.log(
+          `${colors.D}${answers.runtime} i`,
+        );
+        console.log(
           `${colors.D}${answers.runtime} run dev`,
         );
 
