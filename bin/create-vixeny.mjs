@@ -5,6 +5,17 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+const colors = {
+  A: `\x1b[31m`,
+  B: `\x1b[32m`,
+  C: `\x1b[33m`,
+
+  D: `\x1b[34m`,
+
+  R: `\x1b[0m`,
+}
+const terminalSpace = () => console.log("")
+terminalSpace()
 console.log(
   "\x1b[31m%s\x1b[0m" +  // Red for V
   "\x1b[32m%s\x1b[0m" +  // Green for i
@@ -14,8 +25,7 @@ console.log(
   "\x1b[36m%s\x1b[0m",   // Cyan for y
   "V", "i", "x", "e", "n", "y"
 );
-
-
+terminalSpace()
 
 let plugins = [
   { name: "tsx", value: "tsx" },
@@ -42,7 +52,7 @@ const questions = [
   {
     type: "list",
     name: "style",
-    message: "which CSS engine is wanted?",
+    message: "Which CSS engine is wanted?",
     choices: ["vanilla", "postcss", "sass"]
   },
   {
@@ -60,7 +70,7 @@ const questions = [
   {
     type: "input",
     name: "projectName",
-    message: "What is the name of your project?",
+    message: "Where to create the project? Enter directory name or \".\":",
     validate: (input) => {
       // Check if the name is either 'bin' or 'templas'
       if (input === "bin" || input === "templas") {
@@ -70,6 +80,7 @@ const questions = [
       if (input.trim().length === 0) {
         return "Project name cannot be empty.";
       }
+
       return true;
     },
   },
@@ -77,9 +88,16 @@ const questions = [
 
 inquirer.prompt(questions).then((answers) => {
   // Your previous answers handling here
-  const projectName = answers.projectName;
+  let projectName = answers.projectName;
+  const currPath = path.basename(process.cwd())
+  if (projectName === ".") projectName = currPath
 
-  const projectPath = path.join(process.cwd(), projectName);
+  let projectPath = ""
+  if (projectName != currPath) {
+    projectPath = path.join(process.cwd(), projectName);
+  } else {
+    projectPath = process.cwd()
+  }
 
   // Create project directory if it doesn't exist
   if (!fs.existsSync(projectPath)) {
@@ -125,7 +143,7 @@ inquirer.prompt(questions).then((answers) => {
         };
 
         // pug
-        if (answers.installationChoice === "pug" || answers.plugins.find( x => x === "pug")) {
+        if (answers.installationChoice === "pug" || answers.plugins.find(x => x === "pug")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "pug": "^3.0.2",
@@ -135,7 +153,7 @@ inquirer.prompt(questions).then((answers) => {
         if (
           answers.installationChoice === "jsx" ||
           answers.installationChoice === "tsx" ||
-          answers.plugins.find( x => x === "jsx" || x === "tsx")
+          answers.plugins.find(x => x === "jsx" || x === "tsx")
         ) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
@@ -144,21 +162,21 @@ inquirer.prompt(questions).then((answers) => {
           };
         }
         // ejs
-        if (answers.installationChoice === "ejs" || answers.plugins.find( x => x === "ejs" )) {
+        if (answers.installationChoice === "ejs" || answers.plugins.find(x => x === "ejs")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "ejs": "^3.1.9",
           };
         }
 
-        if (answers.style === "sass"  || answers.plugins.find( x => x === "sass")) {
+        if (answers.style === "sass" || answers.plugins.find(x => x === "sass")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "sass": "^1.71.0",
           };
         }
 
-        if (answers.style === "postcss" || answers.plugins.find( x => x === "postcss")) {
+        if (answers.style === "postcss" || answers.plugins.find(x => x === "postcss")) {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "autoprefixer": "^10.4.17",
@@ -204,9 +222,9 @@ inquirer.prompt(questions).then((answers) => {
           replaceOptionsAndImports(
             projectPath,
             importedList +
-              'import { pug } from "vixeny-prespective";\n' +
-              'import  * as pugModule  from "pug";\n' +
-              "const fromPug = pug(pugModule)",
+            'import { pug } from "vixeny-prespective";\n' +
+            'import  * as pugModule  from "pug";\n' +
+            "const fromPug = pug(pugModule)",
             `
 cyclePlugin: {
   ...fromPug,
@@ -272,9 +290,9 @@ const fileServer = {
           replaceOptionsAndImports(
             projectPath,
             importedList +
-              'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
-              'import  * as ejsModule  from "ejs";\n' +
-              "const fromEjs = ejs(ejsModule)",
+            'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
+            'import  * as ejsModule  from "ejs";\n' +
+            "const fromEjs = ejs(ejsModule)",
             `,
 cyclePlugin: {
   ...fromEjs,
@@ -291,17 +309,29 @@ const fileServer = {
           );
           break;
       }
-      console.log("\x1b[32m%s\x1b[0m", "All set! Here's what to do next:");
-      console.log("\x1b[33m%s\x1b[0m", `cd ${projectName}`);
-      console.log(
-        "\x1b[35m%s\x1b[0m",
-        `For development: ${packageManager} run dev`,
-      );
-      console.log(
-        "\x1b[35m%s\x1b[0m",
-        `For release: ${packageManager} run start`,
-      );
-      console.log("\x1b[32m%s\x1b[0m", "Have fun building with Vixeny!");
+      terminalSpace()
+      console.log(`${colors.B}# All set! Here's what to do next:`);
+      terminalSpace()
+      if (currPath != projectName) {
+        console.log(`${colors.D}cd ${projectName}`);
+      }
+      if (answers.runtime === "deno") {
+        console.log(
+          `${colors.D}${answers.runtime} task dev`,
+        );
+      } else {
+        console.log(
+          `${colors.D}${answers.runtime} i`,
+        );
+        console.log(
+          `${colors.D}${answers.runtime} run dev`,
+        );
+
+      }
+
+      terminalSpace()
+      console.log(`${colors.B}# Have fun building with Vixeny!${colors.R}`);
+      terminalSpace()
     });
   });
 });
