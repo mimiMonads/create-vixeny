@@ -1,6 +1,57 @@
 extends ../layouts/layout.pug
 
 block content
-  h1 Main Page
-  p Welcome to our main page.
+  main
+    section
+      h1 Welcome to Create-Vixeny
+    
+    section
+      h2 This Template
+      p In this project, you will find a logging system integrated with SQL databases.
+      p If you have never used Vixeny, you can find a small guide at 
+        code /docs
+    
+    section
+      h2 Project Structure
+      p There are two main components:
+      ul
+        li 
+          strong Dynamic Server (src):
+          |  Here, you can find dynamic content handling, including examples of 
+          code wrap
+          | , 
+          code resolve
+          | , and 
+          code branch
+          |  functions.
+        li 
+          strong Static Server (views):
+          |  This is where all static files are hosted. Specifically, the 
+          code views/public
+          |  directory will serve as the home for these files, ready to be accessed by users. This file is 
+          code ./views/public/$main.html
+          | .
+      p Additionally, there are two plugins active:
+      ul
+        li 
+          strong esbuild:
+          |  Converts TypeScript (.ts) files to ECMAScript Modules (.mjs).
+        li 
+          strong Remark:
+          |  Transforms Markdown (.md) files into HTML, ensuring that documentation and guides are easily accessible.
+      blockquote Remember, Vixeny does not have a 
+        code dist
+        |  folder; everything is lazily composed on the fly. For example, a file named 
+        code example.md
+        |  will be resolved as 
+        code example.html
+        |  and accessed as 
+        code example
+        | .
+    
+    section
+      h2 Join Our Community
+      p Be a part of our journey by joining our Discord community. Here, you can stay updated on the latest developments, provide feedback, and interact with the team and other users.
+      a(href="https://discord.gg/PMXbQtDD3m") Join us on Discord
+
 

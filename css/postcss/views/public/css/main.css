@@ -1,44 +1,59 @@
-/* Define Variables */
+/* Define variables at the root for easy theming and adjustments */
 :root {
-  --dark-purple-bg: #2C2A4A;
-  --darker-purple-bg: #1E1C36;
-  --light-purple-text: #C7C5F4;
-  --contrast-purple-bg: #423F61;
-  --orange-text: #FFA500;
-  --font-family-default: 'Arial', sans-serif;
+  --background-color: #2C2A4A; /* Dark purple background */
+  --text-color: #C7C5F4; /* Light purple text */
+  --header-footer-bg-color: #1E1C36; /* Darker purple */
+  --code-bg-color: #423F61; /* Slightly lighter purple for contrast */
+  --accent-color: #FFA500; /* Orange for accents like links, code, etc. */
+  --white-color: white; /* For text in header, footer, etc. */
 }
 
-body, html {
+body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family-default);
-  background-color: var(--dark-purple-bg);
-  color: var(--light-purple-text);
-  line-height: 1.6;
-  
-  & body {
-    margin: 10px;
-    padding: 10px;
+  padding-top: 60px; /* Adjust this value based on the height of your header */
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6; /* Improved line spacing */
+  height: 100vh;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between; /* Optional, can be adjusted or removed */
+  align-items: center; /* Vertical alignment */
+
+  & a:last-child {
+    margin-left: auto; /* Pushes the last <a> to the right */
   }
 }
 
+section {
+  padding: 20px;
+}
+
 header {
-  background-color: var(--darker-purple-bg);
-  color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Stays above other content */
+  background-color: var(--header-footer-bg-color);
+  color: var(--white-color);
   padding: 20px 0;
   text-align: center;
 
   & a {
-    color: white;
+    color: var(--white-color);
     margin: 0 15px;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: bold; /* Highlight navigation items */
   }
 }
 
 footer {
-  background-color: var(--darker-purple-bg);
-  color: white;
+  background-color: var(--header-footer-bg-color);
+  color: var(--white-color);
   text-align: center;
   padding: 20px 0;
   position: fixed;
@@ -47,68 +62,39 @@ footer {
 }
 
 main {
-  text-align: left;
+  text-align: left; /* Better readability */
   padding: 20px;
-  max-width: 800px;
-  margin: auto;
+  max-width: 800px; /* Optimal line length */
+  margin: auto; /* Center content */
+  padding-bottom: 125px;
 }
 
 code {
-  background-color: var(--contrast-purple-bg);
-  color: var(--orange-text);
+  background-color: var(--code-bg-color);
+  color: var(--accent-color); /* Orange text for code */
   padding: 2px 4px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
 }
 
 blockquote {
-  border-left: 3px solid var(--orange-text);
+  border-left: 3px solid var(--accent-color); /* Orange accent */
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  color: #FFF;
-  background: var(--contrast-purple-bg);
+  color: var(--white-color); /* Contrast with the background */
+  background: var(--code-bg-color); /* Match code background */
 }
 
-.centered-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
 
+/* Example of continuing with a link style */
 a {
-  color: var(--orange-text);
-  text-decoration: none;
+  color: var(--accent-color); /* Orange links */
+  text-decoration: none; /* No underline */
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--orange-text);
+  color: var(--accent-color); /* Consistent with link color */
 }
 
-ul, ol {
-  padding-left: 20px;
 
-  & a {
-    text-decoration: none;
-  }
-}
-
-p {
-  margin-bottom: 1em;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  
-  & th, & td {
-    border: 1px solid var(--light-purple-text);
-    padding: 8px;
-    text-align: left;
-  }
-
-  & th {
-    background-color: var(--contrast-purple-bg);
-    color: var(--orange-text);
-  }
-}

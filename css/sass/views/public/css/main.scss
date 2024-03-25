@@ -1,41 +1,48 @@
-$dark-purple-bg: #2C2A4A;
-$darker-purple-bg: #1E1C36;
-$light-purple-text: #C7C5F4;
-$contrast-purple-bg: #423F61;
-$orange-text: #FFA500;
-$font-family-default: 'Arial', sans-serif;
-
-body, html {
+body {
   margin: 0;
   padding: 0;
-  font-family: $font-family-default;
-  background-color: $dark-purple-bg;
-  color: $light-purple-text;
-  line-height: 1.6;
+  padding-top: 60px; // Adjust this value based on the height of your header
+  font-family: 'Arial', sans-serif;
+  background-color: #2C2A4A; // Dark purple background
+  color: #C7C5F4; // Light purple text
+  line-height: 1.6; // Improved line spacing
+  height: 100vh;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between; // This line is optional and can be adjusted or removed based on your layout needs
+  align-items: center; // This ensures the items are aligned in the center vertically
   
-  // Nested body rules
-  body {
-    margin: 10px;
-    padding: 10px;
+  a:last-child {
+    margin-left: auto; // Pushes the last <a> element to the right
   }
 }
 
+section {
+  padding: 20px;
+}
+
 header {
-  background-color: $darker-purple-bg;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; // Ensures the header stays above other content
+  background-color: #1E1C36; // Darker purple
   color: white;
   padding: 20px 0;
   text-align: center;
-
+  
   a {
     color: white;
     margin: 0 15px;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: bold; // Make navigation items pop
   }
 }
 
 footer {
-  background-color: $darker-purple-bg;
+  background-color: #1E1C36; // Darker purple
   color: white;
   text-align: center;
   padding: 20px 0;
@@ -45,49 +52,50 @@ footer {
 }
 
 main {
-  text-align: left;
+  text-align: left; // Left align for better readability
   padding: 20px;
-  max-width: 800px;
-  margin: auto;
+  max-width: 800px; // Optimal line length for reading
+  margin: auto; // Center the content
+  padding-bottom: 125px;
 }
 
 code {
-  background-color: $contrast-purple-bg;
-  color: $orange-text;
+  background-color: #423F61; // Slightly lighter purple for contrast
+  color: #FFA500; // Orange text for code
   padding: 2px 4px;
   border-radius: 4px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Courier New', monospace; // Monospaced font for code
 }
 
 blockquote {
-  border-left: 3px solid $orange-text;
+  border-left: 3px solid #FFA500; // Orange accent on the side
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  color: #FFF;
-  background: $contrast-purple-bg;
+  color: #FFF; // Brighter text for contrast
+  background: #423F61; // Matching the code background
 }
 
 .centered-img {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  width: 50%; // Adjust this value based on your preference
 }
 
 a {
-  color: $orange-text;
-  text-decoration: none;
+  color: #FFA500; // Orange links for better visibility
+  text-decoration: none; // No underline for links
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: $orange-text;
+  color: #FFA500; // Orange text for headings
 }
 
 ul, ol {
-  padding-left: 20px;
-
+  padding-left: 20px; // Indent list items
+  
   a {
-    text-decoration: none;
+    text-decoration: none; // No underline for list links
   }
 }
 
@@ -100,13 +108,13 @@ table {
   width: 100%;
   
   th, td {
-    border: 1px solid $light-purple-text;
+    border: 1px solid #C7C5F4; // Light purple border for table cells
     padding: 8px;
     text-align: left;
   }
-
+  
   th {
-    background-color: $contrast-purple-bg;
-    color: $orange-text;
+    background-color: #423F61; // Header background
+    color: #FFA500; // Orange text for headers
   }
 }

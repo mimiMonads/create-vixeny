@@ -1,15 +1,31 @@
-body , html {
+body {
   margin: 0;
   padding: 0;
+  padding-top: 60px; /* Adjust this value based on the height of your header */
   font-family: 'Arial', sans-serif;
   background-color: #2C2A4A; /* Dark purple background */
   color: #C7C5F4; /* Light purple text */
   line-height: 1.6; /* Improved line spacing */
+  height: 100vh;
 }
 
-body {
-  margin: 10;
-  padding: 10;
+nav {
+  display: flex;
+  justify-content: space-between; /* This line is optional and can be adjusted or removed based on your layout needs */
+  align-items: center; /* This ensures the items are aligned in the center vertically */
+}
+
+nav a:last-child {
+  margin-left: auto; /* Pushes the last <a> element to the right */
+}
+
+
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures the header stays above other content */
 }
 
 /* Header styling */
@@ -44,6 +60,7 @@ main {
   padding: 20px;
   max-width: 800px; /* Optimal line length for reading */
   margin: auto; /* Center the content */
+  padding-bottom: 125px;
 }
 
 /* Code styling for better highlighting */
@@ -113,3 +130,4 @@ table th {
   background-color: #423F61; /* Header background */
   color: #FFA500; /* Orange text for headers */
 }
+

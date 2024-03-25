@@ -212,10 +212,11 @@ cyclePlugin: {
   ...fromPug,
 },`,
             `
-const staticServer = {
+const fileServer = {
   type: "fileServer",
   name: "/",
   path: "./views/public/",
+  removeExtensionOf: [".html"],
   slashIs: "$main",
   //it has options
   template: [${listForRemplace.toString()}]
@@ -228,7 +229,7 @@ const staticServer = {
             importedList,
             "",
             `
-const staticServer = {
+const fileServer = {
   type: "fileServer",
   name: "/",
   path: "./views/public/",
@@ -243,10 +244,11 @@ const staticServer = {
             importedList,
             "",
             `
-  const staticServer = {
+  const fileServer = {
     type: "fileServer",
     name: "/",
     path: "./views/public/",
+    removeExtensionOf: [".html"],
     slashIs: "$main",
     template: [${listForRemplace.toString()}]};`,
           );
@@ -257,11 +259,12 @@ const staticServer = {
             importedList,
             "",
             `
-  const staticServer = {
+  const fileServer = {
     type: "fileServer",
     name: "/",
     path: "./views/public/",
     slashIs: "$main",
+    removeExtensionOf: [".html"],
     template: [${listForRemplace.toString()}]};`,
           );
           break;
@@ -277,10 +280,11 @@ cyclePlugin: {
   ...fromEjs,
 },`,
             `
-const staticServer = {
+const fileServer = {
   type: "fileServer",
   name: "/",
   path: "./views/public/",
+  removeExtensionOf: [".html"],
   slashIs: "$main",
   template: [${listForRemplace.toString()}],
 };`,

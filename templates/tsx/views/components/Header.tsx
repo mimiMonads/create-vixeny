@@ -5,15 +5,23 @@ const Header: React.FC = () => (
     <nav>
       <a
         href="/"
-        style={{ color: "white", textDecoration: "none", margin: "0 15px" }}
       >
         Home
       </a>
       <a
         href="/docs"
-        style={{ color: "white", textDecoration: "none", margin: "0 15px" }}
       >
         Docs
+      </a>
+      <a
+        href="/api/panel"
+      >
+        Panel
+      </a>
+      <a
+        href="/login"
+      >
+        Login
       </a>
     </nav>
   </header>

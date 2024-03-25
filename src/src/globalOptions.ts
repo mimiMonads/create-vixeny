@@ -26,4 +26,6 @@ const cryptoKey = {
 
 plugins.assertOptions(globalOptions);
 
-export { cryptoKey, globalOptions, staticServer };
+
+
+export { cryptoKey, globalOptions, fileServer };
