@@ -23,13 +23,13 @@ export default wrap({
     f: async (f) => {
       return f.resolve.isValid !== null
         ? new Response(
-          await Deno.readTextFile("./views/private/panel.html").text(),
+          await Deno.readTextFile("./views/private/panel.html"),
           {
             headers: new Headers([["Content-Type", "text/html"]]),
           },
         )
         : new Response(
-          await Deno.readTextFile("./views/public/login.html").text(),
+          await Deno.readTextFile("./views/public/login.html"),
           {
             headers: new Headers([["Content-Type", "text/html"]]),
             status: 401,
@@ -53,7 +53,7 @@ export default wrap({
 
       if (!user || !pass) {
         return new Response(
-          await Deno.readTextFile("./views/public/login.html").text(),
+          await Deno.readTextFile("./views/public/login.html"),
           {
             headers: new Headers([["Content-Type", "text/html"], [
               "Set-Cookie",
@@ -87,7 +87,7 @@ export default wrap({
         });
       }
       return new Response(
-        await Deno.readTextFile("./views/public/login.html").text(),
+        await Deno.readTextFile("./views/public/login.html"),
         {
           headers: new Headers([["Content-Type", "text/html"]]),
           status: 401,
