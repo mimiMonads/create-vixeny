@@ -22,10 +22,15 @@ const cryptoKey = {
   globalKey: crypto.randomUUID(),
 };
 
+//static server
+
 ///STATICSERVER///
 
+//checking if the function works
 plugins.assertOptions(globalOptions);
 
 
-
+//export
 export { cryptoKey, globalOptions, fileServer };
+//end
+

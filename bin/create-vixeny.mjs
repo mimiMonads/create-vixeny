@@ -378,21 +378,15 @@ function replaceOptionsAndImports(
   const filePath = path.join(projectPath, "src/globalOptions.ts"); // Adjust the path format
 
   // Read the file content
-  fs.readFile(filePath, "utf8", (readError, data) => {
+  fs.readFile("./var/globalOptions.ts", "utf8", (readError, data) => {
     if (readError) {
       console.error(`Error reading file: ${readError}`);
       return;
     }
 
-    let updatedContent = data.replace("///IMPORTS///", additionalImports);
-    updatedContent = updatedContent.replace("///OPTIONS///", additionalOptions);
-    updatedContent = updatedContent.replace(
-      "///STATICSERVER///",
-      additionalStaticServer,
-    );
-
-    // Delete the file before writing the updated content
-    fs.unlink(filePath, (unlinkError) => {
+    const updatedContent = data.replace("///IMPORTS///", additionalImports)
+          .replace("///OPTIONS///", additionalOptions)
+          .replace("///STATICSERVER///",additionalStaticServer);
 
       // Write the updated content back to a new file
       fs.writeFile(filePath, updatedContent, "utf8", (writeError) => {
@@ -401,7 +395,7 @@ function replaceOptionsAndImports(
           return;
         }
       });
-    });
+ 
   });
 }
 const listOfImports = (arr) =>
