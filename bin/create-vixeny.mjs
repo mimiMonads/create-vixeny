@@ -378,7 +378,7 @@ function replaceOptionsAndImports(
   const filePath = path.join(projectPath, "src/globalOptions.ts"); // Adjust the path format
 
   // Read the file content
-  fs.readFile("./var/globalOptions.ts", "utf8", (readError, data) => {
+  fs.readFile(path.join(projectPath, "../var/globalOptions.ts"), "utf8", (readError, data) => {
     if (readError) {
       console.error(`Error reading file: ${readError}`);
       return;
@@ -386,10 +386,10 @@ function replaceOptionsAndImports(
 
     const updatedContent = data.replace("///IMPORTS///", additionalImports)
           .replace("///OPTIONS///", additionalOptions)
-          .replace("///STATICSERVER///",additionalStaticServer);
+          .replace("///STATICSERVER///",additionalStaticServer) ;
 
       // Write the updated content back to a new file
-      fs.writeFile(filePath, updatedContent, "utf8", (writeError) => {
+      fs.writeFile(filePath, updatedContent + '\n export { cryptoKey, globalOptions, fileServer };', "utf8", (writeError) => {
         if (writeError) {
           console.error(`Error writing file: ${writeError}`);
           return;

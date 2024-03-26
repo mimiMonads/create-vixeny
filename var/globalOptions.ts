@@ -31,6 +31,5 @@ plugins.assertOptions(globalOptions);
 
 
 //export
-export { cryptoKey, globalOptions, fileServer };
-//end
+
 
