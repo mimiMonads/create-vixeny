@@ -368,18 +368,19 @@ function copyTemplateFiles(templateName, projectPath) {
     console.error("Error copying template files:", error);
   }
 }
+
 function replaceOptionsAndImports(
   projectPath,
   additionalImports,
   additionalOptions,
   additionalStaticServer,
 ) {
-  const filePath = path.join(projectPath, "/src/globalOptions.ts"); // Adjust extension if necessary
+  const filePath = path.join(projectPath, "src/globalOptions.ts"); // Adjust the path format
 
   // Read the file content
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      console.error(`Error reading file: ${err}`);
+  fs.readFile(filePath, "utf8", (readError, data) => {
+    if (readError) {
+      console.error(`Error reading file: ${readError}`);
       return;
     }
 
@@ -390,12 +391,16 @@ function replaceOptionsAndImports(
       additionalStaticServer,
     );
 
-    // Write the updated content back to the file
-    fs.writeFile(filePath, updatedContent, "utf8", (err) => {
-      if (err) {
-        console.error(`Error writing file: ${err}`);
-        return;
-      }
+    // Delete the file before writing the updated content
+    fs.unlink(filePath, (unlinkError) => {
+
+      // Write the updated content back to a new file
+      fs.writeFile(filePath, updatedContent, "utf8", (writeError) => {
+        if (writeError) {
+          console.error(`Error writing file: ${writeError}`);
+          return;
+        }
+      });
     });
   });
 }
