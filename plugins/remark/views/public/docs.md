@@ -4,6 +4,16 @@
     <script src="/mjs/docs.mjs" type="module"></script>
 </head>
 
+<header>
+  <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Docs</a>
+      <a href="/api/panel">Panel</a>
+      <a href="/login">Login</a>
+  </nav>
+</header>
+
+<main>
 
 1. [Introduction to `create-vixeny`](#introduction-to-create-vixeny)
    - [Petitions](#petitions)
@@ -311,3 +321,4 @@ export default wrap()()
 Customization options include `only`, which bypasses the optimizer to add only specified functions; `add`, which includes additional functions; and `remove`, which excludes
 
 
+</main>
