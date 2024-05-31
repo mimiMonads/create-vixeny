@@ -1,11 +1,11 @@
-import { morphism } from "vixeny";
+import { petitions } from "vixeny";
 import { cryptoKey, globalOptions } from "../globalOptions.ts";
 
-const getFormDataResolve = morphism(globalOptions)({
+const getFormDataResolve = petitions.resolve(globalOptions)({
   f: async (f) => await f.req.formData(),
 });
 
-const validToken = morphism(globalOptions)({
+const validToken = petitions.resolve(globalOptions)({
   crypto: {
     ...cryptoKey,
     token: { jwtToken: {} },
@@ -17,7 +17,7 @@ const validToken = morphism(globalOptions)({
       : null,
 });
 
-const isValidUser = morphism(globalOptions)({
+const isValidUser = petitions.resolve(globalOptions)({
   crypto: {
     ...cryptoKey,
     token: { jwtToken: {} },

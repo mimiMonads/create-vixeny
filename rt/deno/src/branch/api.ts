@@ -1,8 +1,8 @@
 
-import { morphism } from "vixeny";
+import { petitions } from "vixeny";
 import { db } from "../db.ts";
 
-const getFirst10 = morphism()({
+const getFirst10 = petitions.branch()({
   f: () => {
     const stmt = db.prepare("SELECT * FROM items LIMIT 10");
     const items = stmt.all();
@@ -11,7 +11,8 @@ const getFirst10 = morphism()({
   },
 });
 
-const getUserBranch = morphism()({
+const getUserBranch = petitions.branch()({
+  arguments: {} as any,
   f: (c) => {
     const stmt = db.prepare("SELECT * FROM users WHERE username = ? AND password = ?");
     const user = stmt.value<[any]>(c.arguments);
@@ -20,7 +21,8 @@ const getUserBranch = morphism()({
   },
 });
 
-const deleteByID = morphism()({
+const deleteByID = petitions.branch()({
+  arguments: {} as any,
   f: (c) => {
     const stmt = db.prepare("DELETE FROM items WHERE id = ?");
     stmt.run(c.arguments);
@@ -29,7 +31,8 @@ const deleteByID = morphism()({
   },
 });
 
-const addItem = morphism()({
+const addItem = petitions.branch()({
+  arguments: {} as any,
   f: (c) => {
     const stmt = db.prepare("INSERT INTO items (name, price) VALUES (?, ?)");
     stmt.run(c.arguments);
