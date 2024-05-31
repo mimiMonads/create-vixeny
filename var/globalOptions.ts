@@ -10,7 +10,7 @@ const globalOptions = plugins.globalOptions({
   hasName: "http://localhost:3000/",
   ...(values?.liveReloading
     ? {
-      enableLiveReloading: true as const,
+      //enableLiveReloading: true as const,
     }
     : {}),
 
