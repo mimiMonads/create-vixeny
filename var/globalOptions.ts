@@ -6,7 +6,7 @@ import { plugins, runtime } from "vixeny";
 
 const values = runtime.arguments();
 
-const globalOptions = {
+const globalOptions = plugins.globalOptions({
   hasName: "http://localhost:3000/",
   ...(values?.liveReloading
     ? {
@@ -16,7 +16,7 @@ const globalOptions = {
 
   ///OPTIONS///
   
-};
+});
 
 const cryptoKey = {
   globalKey: crypto.randomUUID(),
@@ -26,8 +26,7 @@ const cryptoKey = {
 
 ///STATICSERVER///
 
-//checking if the function works
-plugins.assertOptions(globalOptions);
+
 
 
 //export
