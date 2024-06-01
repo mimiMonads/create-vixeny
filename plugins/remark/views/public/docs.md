@@ -39,13 +39,13 @@ Welcome to the `create-vixeny` documentation. Our aim is to provide you with pra
 
 ## Petitions
 
-In Vixeny, routes are referred to as "petitions." These are objects that necessitate a function, denoted as `f`, and a `path`. The example below illustrates how to define a basic petition:
+In Vixeny, routes are referred to as "petitions." These are objects that in almost all cases necessitate a function, denoted as `f`, and a `path`. The example below illustrates how to define a basic petition:
 
 ```javascript
-petitionHandler({
-  path: "/",
-  f: () => "helloWorld",
-});
+  const helloWorld = petitions.common()({
+    path: "/hello",
+    f: () => "helloWorld",
+  })
 ```
 
 ## Wrap
@@ -56,12 +56,13 @@ The `wrap` is a pure function designed to facilitate the handling and manipulati
 ```javascript
 const options = {...}; // Optional configuration
 
-// Exporting a standard Petition
-export const root = wrap(options)()
+  export const root = wrap(options)()
   .stdPetition({
-    path: "/",
-    f: () => "helloWorld",
-  });
+    path: "/ping",
+    f: () => "pong"
+  })
+  .addAnyPetition(helloWorld)
+  ;
 ```
 
 ### Debugging
@@ -69,19 +70,22 @@ export const root = wrap(options)()
 With `wrap`, you can easily inspect the current state at any point between methods:
 
 ```javascript
-wrap()()
+const server = wrap()()
   .stdPetition({
     path: '/one',
-    f: () => null
+    f: () => 'one'
   })
   // Logging the paths after adding the first petition:
   .logPaths()
   .stdPetition({
     path: '/two',
-    f: () => null
+    f: () => 'two'
   })
   // Logging the paths after adding the second petition:
-  .logPaths();
+  .logPaths()
+  .union(root.unwrap())
+  .logPaths()
+  // Logging the paths including `/hello`
 ```
 
 ### Testing
@@ -89,12 +93,13 @@ wrap()()
 Vixeny can be tested without the need for a server, allowing for individual or comprehensive testing of wraps:
 
 ```javascript
-// Assuming `wrap` has been configured with multiple petitions
+// Re-using the last wrap
 const server = wrap(...)...
+
 const testServer = server.testRequests();
 
 // Simulate requests and test responses
-testServer(new Request("/some-path")).then(response => {
+testServer(new Request("/helloWold")).then(response => {
   // Perform assertions or checks on the response
 });
 ```
@@ -133,9 +138,9 @@ console.log(await mocked(request).then(r => r.text()));
 You can combine petitions from another `wrap` instance with the current one, allowing for the reuse of petitions across different parts of your application:
 
 ```javascript
-// Assuming `extension` is imported from "extension.ts"
+// Assuming `server` 
 export default wrap()()
-  .union(extension.unwrap())
+  .union(server.unwrap())
   .stdPetition({
     path: "/hello",
     f: () => "helloWorld",
@@ -149,15 +154,15 @@ Vixeny is fully typed, with JSDoc examples provided for ease of use. Hover over 
 
 Unlike traditional frameworks that rely on life cycles for code execution and rendering management, Vixeny employs a concept called "resolution." A resolution is defined as: 
 
-> The chaining of any morphism by its resolver.
+> The chaining of the resolution of any morphism by its `resolve`.
 
 ## Morphism
 
-The most fundamental type in Vixeny is a "morphism." All petitions using the optimizer, `resolve`, or `branch` are considered morphisms. Vixeny provides a function to help type these objects:
+The most fundamental type in Vixeny is a "morphism." All petitions using the `composer`, `resolve`, or `branch` are considered morphisms. Vixeny provides a function to help type these objects:
 
 ```javascript
 //resolve
-const hello = morphism(options)(
+const hello = petitions.resolve()(
   {
     resolve: {
 	// nested resolve
@@ -170,7 +175,7 @@ const hello = morphism(options)(
 );
 ```
 
-> Any `resolve` or `branch` can be utilized within a morphism
+> Any `resolve` or `branch` can be utilized within a `morphism`, but there are not considered `petitions`, meaning, you can not use them directly in a `wrap`.
 
 ## Resolve Properties
 
@@ -201,9 +206,10 @@ wrap(options)()
   .stdPetition({
     path: "/helloWorld",
     resolve: {
-      hello: { async f: () => await Promise.resolve("Hello") },
+      hello: { f: async () => await Promise.resolve("Hello") },
       world: { f: () => 'world' }
     },
+    // Important to notice that `f` is synchronous even if the resolve `hello` is not.
     f: ctx => `${ctx.resolve.hello} ${ctx.resolve.world}`,
   });
 ```
@@ -219,7 +225,7 @@ const routes = wrap(options)()
     path: "/weather",
     resolve: {
       currentWeather: {
-        async f: () => await fetch("https://api.weather.com/current").then(res => res.json())
+         f: async () => await fetch("https://api.weather.com/current").then(res => res.json())
       }
     },
     f: (c) => c.resolve.currentWeather.temperature > 75 ? "It's warm outside" : "It's cool outside"
@@ -248,8 +254,8 @@ test("/weather", async () => {
 The resolution mechanism allows for the reuse and on-the-fly modification of any morphism, making your code more modular and maintainable:
 
 ```javascript
-// Define a morphism
-const hello = morphism(options)({
+// Define a resolve
+const hello =  petitions.resolve(options)({
   resolve: {
     nested: {
       f: () => "hello",
@@ -277,9 +283,9 @@ const serve = wrap(options)()
 
 > This feature underscores the importance of utilizing `morphism` to ensure type safety within your functions.
 
-# Optimizer
+# Composer
 
-The `optimizer` in Vixeny plays a crucial role by overseeing the `CTX` within functions, composing petitions, chaining `resolve` and `branch`, and efficiently handling both asynchronous and synchronous operations. But what exactly does this entail? Let's delve into the concept of `CTX` and its role in TypeScript, which exposes all native functions (including plugins, not covered here):
+The `composer` in Vixeny plays a crucial role by overseeing the `CTX` within functions, composing petitions, chaining `resolve` and `branch`, and efficiently handling both asynchronous and synchronous operations. But what exactly does this entail? Let's delve into the concept of `CTX` and its role in TypeScript, which exposes all native functions (including plugins, not covered here):
 
 ```typescript
 export default wrap()()
