@@ -283,7 +283,8 @@ const fileServer = {
     path: "./views/public/",
     slashIs: "$main",
     removeExtensionOf: [".html"],
-    template: [${listForRemplace.toString()}]};`,
+    template: [${listForRemplace.toString()}]
+  };`,
           );
           break;
         case "ejs":
