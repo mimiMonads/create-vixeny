@@ -1,10 +1,6 @@
 import { wrap } from "vixeny";
 import { cryptoKey, globalOptions } from "../../globalOptions.ts";
-import {
-  addItem,
-  deleteByID,
-  getFirst10,
-} from "../../branch/api.ts";
+import { addItem, deleteByID, getFirst10 } from "../../branch/api.ts";
 import { isValidUser } from "../../resolve/api.ts";
 
 const path = globalOptions.hasName;

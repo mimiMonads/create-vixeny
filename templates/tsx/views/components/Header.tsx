@@ -3,24 +3,16 @@ import React from "react";
 const Header: React.FC = () => (
   <header>
     <nav>
-      <a
-        href="/"
-      >
+      <a href="/">
         Home
       </a>
-      <a
-        href="/docs"
-      >
+      <a href="/docs">
         Docs
       </a>
-      <a
-        href="/api/panel"
-      >
+      <a href="/api/panel">
         Panel
       </a>
-      <a
-        href="/login"
-      >
+      <a href="/login">
         Login
       </a>
     </nav>

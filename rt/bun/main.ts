@@ -1,7 +1,7 @@
 import { vixeny, wrap } from "vixeny";
 import root from "./src/paths/root.ts";
 import api from "./src/paths/api.ts";
-import { globalOptions, fileServer } from "./src/globalOptions.ts";
+import { fileServer, globalOptions } from "./src/globalOptions.ts";
 
 Bun.serve({
   fetch: vixeny(globalOptions)([

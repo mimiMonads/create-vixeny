@@ -4,8 +4,6 @@ import { getFormDataResolve, validToken } from "../resolve/api.ts";
 import { getUserBranch } from "../branch/api.ts";
 import crud from "./api/crud.ts";
 
-
-
 const path = globalOptions.hasName;
 
 export default wrap({
@@ -13,7 +11,7 @@ export default wrap({
   //seting name of this dir
   startWith: "/api",
 })()
-.union(crud.unwrap())
+  .union(crud.unwrap())
   .customPetition({
     path: "/panel",
     // resolve isUserResolve can be used instead
@@ -42,8 +40,8 @@ export default wrap({
     method: "POST",
     crypto: { ...cryptoKey },
     resolve: {
-      formData: getFormDataResolve ,
-    } ,
+      formData: getFormDataResolve,
+    },
     branch: {
       getUser: getUserBranch,
     },
