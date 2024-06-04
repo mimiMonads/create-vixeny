@@ -190,6 +190,7 @@ const onylBackend = async () => {
             packageJson.devDependencies = {
               ...packageJson.devDependencies,
               "chokidar": "^3.6.0",
+              "bun-types": "^1.0.2",
             };
 
             packageJson.main = "main.ts";
@@ -263,11 +264,16 @@ const fronted = async () => {
             : "bun run watcher.mjs",
         };
 
+        packageJson.devDependencies = {
+          ...packageJson.dependencies,
+          "bun-types": "^1.0.2",
+          "chokidar": "^3.6.0",
+        }
+
         if (answers.answers !== "deno") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
-            "vixeny": "latest", // Assuming you want the latest version
-            "chokidar": "^3.6.0",
+            "vixeny": "latest",
             "rehype-format": "^5.0.0",
             "rehype-stringify": "^10.0.0",
             "remark-parse": "^11.0.0",
