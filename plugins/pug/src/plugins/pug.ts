@@ -1,4 +1,4 @@
-import { pugStaticServerPlugin } from "vixeny-prespective";
+import { pugStaticServerPlugin } from "vixeny-perspective";
 import * as pugModule from "pug";
 
 export default pugStaticServerPlugin(pugModule.compileFile)({

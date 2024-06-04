@@ -1,4 +1,4 @@
-import { jsxStaticServer } from "vixeny-prespective";
+import { jsxStaticServer } from "vixeny-perspective";
 
 import * as Dom from "react-dom/server";
 import * as React from "react";

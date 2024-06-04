@@ -8,7 +8,7 @@ const path = globalOptions.hasName;
 
 export default wrap({
   ...globalOptions,
-  //seting name of this dir
+  //setting name of this dir
   startWith: "/api",
 })()
   .union(crud.unwrap())

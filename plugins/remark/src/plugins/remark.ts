@@ -1,5 +1,5 @@
 import { PluginTuple, unified } from "unified";
-import { remarkStaticServer } from "vixeny-prespective";
+import { remarkStaticServer } from "vixeny-perspective";
 
 import rehypeFormat from "rehype-format";
 import rehypeStringify from "rehype-stringify";

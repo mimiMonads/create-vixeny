@@ -1,4 +1,4 @@
-import { typescriptStaticServer } from "vixeny-prespective";
+import { typescriptStaticServer } from "vixeny-perspective";
 
 import esm from "esbuild";
 

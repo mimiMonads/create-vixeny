@@ -135,9 +135,9 @@ const questionsForBackendTemplate = [
 
 inquirer.prompt(questionForMain)
   .then((answers) =>
-    answers.main === "with fronted (recommended)" ? fronted() : onylBackend()
+    answers.main === "with fronted (recommended)" ? fronted() : onlyBackend()
   );
-const onylBackend = async () => {
+const onlyBackend = async () => {
   inquirer.prompt(questionsForBackendTemplate).then(
     (answers) => {
       // Your previous answers handling here
@@ -268,7 +268,7 @@ const fronted = async () => {
           ...packageJson.dependencies,
           "bun-types": "^1.0.2",
           "chokidar": "^3.6.0",
-        }
+        };
 
         if (answers.answers !== "deno") {
           packageJson.dependencies = {
@@ -279,7 +279,7 @@ const fronted = async () => {
             "remark-parse": "^11.0.0",
             "remark-rehype": "^11.1.0",
             "unified": "^11.0.4",
-            "vixeny-prespective": "latest",
+            "vixeny-perspective": "latest",
             "esbuild": "^0.20.1",
           };
 
@@ -380,7 +380,7 @@ const fronted = async () => {
             replaceOptionsAndImports(
               projectPath,
               importedList +
-                'import { pug } from "vixeny-prespective";\n' +
+                'import { pug } from "vixeny-perspective";\n' +
                 'import  * as pugModule  from "pug";\n' +
                 "const fromPug = pug(pugModule)",
               `
@@ -449,7 +449,7 @@ const fileServer = {
             replaceOptionsAndImports(
               projectPath,
               importedList +
-                'import { ejs , ejsStaticServerPlugin } from "vixeny-prespective";\n' +
+                'import { ejs , ejsStaticServerPlugin } from "vixeny-perspective";\n' +
                 'import  * as ejsModule  from "ejs";\n' +
                 "const fromEjs = ejs(ejsModule)",
               `,

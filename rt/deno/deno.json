@@ -1,7 +1,7 @@
 {
   "imports": {
     "vixeny": "https://deno.land/x/endofunctor@v0.1.20/main.ts",
-    "vixeny-prespective": "https://deno.land/x/vixeny_prespective@v0.3.0/main.ts",
+    "vixeny-perspective": "https://deno.land/x/vixeny_prespective@v0.3.0/main.ts",
     "ejs": "npm:ejs",
     "pug": "npm:pug",
     "unified": "npm:unified",

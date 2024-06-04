@@ -1,4 +1,4 @@
-import { postcssStaticServer } from "vixeny-prespective";
+import { postcssStaticServer } from "vixeny-perspective";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import autoprefixer from "autoprefixer";
