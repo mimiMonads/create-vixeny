@@ -191,7 +191,7 @@ const fronted = async () => {
           // pug
           if (
             answers.installationChoice === "pug" ||
-            answers.plugins.find((x) => x === "pug")
+            answers.template.find((x) => x === "pug")
           ) {
             packageJson.dependencies = {
               ...packageJson.dependencies,
@@ -202,7 +202,7 @@ const fronted = async () => {
           if (
             answers.installationChoice === "jsx" ||
             answers.installationChoice === "tsx" ||
-            answers.plugins.find((x) => x === "jsx" || x === "tsx")
+            answers.template.find((x) => x === "jsx" || x === "tsx")
           ) {
             packageJson.dependencies = {
               ...packageJson.dependencies,
@@ -213,7 +213,7 @@ const fronted = async () => {
           // ejs
           if (
             answers.installationChoice === "ejs" ||
-            answers.plugins.find((x) => x === "ejs")
+            answers.template.find((x) => x === "ejs")
           ) {
             packageJson.dependencies = {
               ...packageJson.dependencies,
@@ -223,7 +223,7 @@ const fronted = async () => {
 
           if (
             answers.style === "sass" ||
-            answers.plugins.find((x) => x === "sass")
+            answers.template.find((x) => x === "sass")
           ) {
             packageJson.dependencies = {
               ...packageJson.dependencies,
@@ -233,7 +233,7 @@ const fronted = async () => {
 
           if (
             answers.style === "postcss" ||
-            answers.plugins.find((x) => x === "postcss")
+            answers.template.find((x) => x === "postcss")
           ) {
             packageJson.dependencies = {
               ...packageJson.dependencies,
@@ -256,13 +256,13 @@ const fronted = async () => {
             }
           },
         );
-        //Get the plugins using
+        //Get the template using
         const listOfPlugins = [
           answers.installationChoice,
           answers.style,
           "typescript",
           "remark",
-          ...answers?.plugins ?? [],
+          ...answers?.template ?? [],
         ]
           .filter((x) => x !== "vanilla");
 

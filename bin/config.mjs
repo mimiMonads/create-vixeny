@@ -7,7 +7,7 @@ export const colors = {
   D: `\x1b[34m`,
   R: `\x1b[0m`,
 };
-export const plugins = [
+export const template = [
   { name: "tsx", value: "tsx" },
   { name: "jsx", value: "jsx" },
   { name: "ejs", value: "ejs" },
@@ -54,6 +54,8 @@ export const questionForMain = [
   },
 ];
 
+
+
 export const questionsForTemplate = [
   {
     type: "list",
@@ -69,9 +71,9 @@ export const questionsForTemplate = [
   },
   {
     type: "checkbox",
-    name: "plugins",
-    message: "Would you like to include any extra plugins?",
-    choices: plugins,
+    name: "template",
+    message: "Would you like to include any extra template?",
+    choices: template,
   },
   ...repeatedQuestions,
 ];
