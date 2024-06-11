@@ -3,18 +3,20 @@ import inquirer from "inquirer";
 import { exec } from "node:child_process";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { goodByeMessage, listOfImports, terminalSpace , checkPackageManager} from "./utils.mjs";
+import {
+  __dirname,
+  __filename,
+  questionForMain,
+  questionsForBackendTemplate,
+  questionsForTemplate,
+} from "./config.mjs";
+import {
+  copyTemplateFiles,
+  replaceOptionsAndImports
+} from "./io.mjs"
 
-const colors = {
-  A: `\x1b[31m`,
-  B: `\x1b[32m`,
-  C: `\x1b[33m`,
 
-  D: `\x1b[34m`,
-
-  R: `\x1b[0m`,
-};
-const terminalSpace = () => console.log("");
 terminalSpace();
 console.log(
   "\x1b[31m%s\x1b[0m" + // Red for V
@@ -32,106 +34,9 @@ console.log(
 );
 terminalSpace();
 
-const goodByeMessage = (runtime, currPath, projectName) => {
-  terminalSpace();
-  console.log(`${colors.B}# All set! Here's what to do next:`);
-  terminalSpace();
-  if (currPath != projectName) {
-    console.log(`${colors.D}cd ${projectName}`);
-  }
-  if (runtime === "deno") {
-    console.log(
-      `${colors.D}${runtime} task dev`,
-    );
-  } else {
-    console.log(
-      `${colors.D}${runtime} i`,
-    );
-    console.log(
-      `${colors.D}${runtime} run dev`,
-    );
-  }
-
-  terminalSpace();
-  console.log(`${colors.B}# Have fun building with Vixeny!${colors.R}`);
-  terminalSpace();
-};
-
-let plugins = [
-  { name: "tsx", value: "tsx" },
-  { name: "jsx", value: "jsx" },
-  { name: "ejs", value: "ejs" },
-  { name: "pug", value: "pug" },
-  { name: "postcss", value: "postcss" },
-  { name: "sass", value: "sass" },
-];
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const packageManager = await checkPackageManager("npm") ??
   await checkPackageManager("yarn") ??
   await checkPackageManager("pnpm");
-
-const repeatedQuestions = [
-  {
-    type: "list",
-    name: "runtime",
-    message: "Which runtime would you prefer?",
-    choices: ["bun", "deno"],
-  },
-  {
-    type: "input",
-    name: "projectName",
-    message: 'Where to create the project? Enter directory name or ".":',
-    validate: (input) => {
-      // Check if the name is either 'bin' or 'templas'
-      if (input === "bin" || input === "templas") {
-        return 'Project name cannot be "bin" or "templas". Please choose a different name.';
-      }
-      // Check if the input is not empty
-      if (input.trim().length === 0) {
-        return "Project name cannot be empty.";
-      }
-
-      return true;
-    },
-  },
-];
-
-const questionForMain = [
-  {
-    type: "list",
-    name: "main",
-    message: "Welcome to Vixeny!, what kind of template do you need?",
-    choices: ["with fronted (recommended)", "just backend"],
-  },
-];
-
-const questionsForTemplate = [
-  {
-    type: "list",
-    name: "installationChoice",
-    message: " Which HTML template would you like?",
-    choices: ["vanilla", "pug", "ejs", "jsx", "tsx"],
-  },
-  {
-    type: "list",
-    name: "style",
-    message: "Which CSS engine is wanted?",
-    choices: ["vanilla", "postcss", "sass"],
-  },
-  {
-    type: "checkbox",
-    name: "plugins",
-    message: "Would you like to include any extra plugins?",
-    choices: plugins,
-  },
-  ...repeatedQuestions,
-];
-
-const questionsForBackendTemplate = [
-  ...repeatedQuestions,
-];
 
 inquirer.prompt(questionForMain)
   .then((answers) =>
@@ -478,91 +383,4 @@ const fileServer = {
   });
 };
 
-function copyTemplateFiles(templateName, projectPath) {
-  const templatePath = path.join(__dirname, "..", templateName);
 
-  function copyRecursively(sourcePath, targetPath) {
-    // Check if the source is a directory or file
-    const stats = fs.statSync(sourcePath);
-
-    if (stats.isDirectory()) {
-      // Create the directory if it doesn't exist
-      if (!fs.existsSync(targetPath)) {
-        fs.mkdirSync(targetPath);
-      }
-
-      // Read the directory contents and recursively copy
-      const entries = fs.readdirSync(sourcePath);
-      for (const entry of entries) {
-        const srcPath = path.join(sourcePath, entry);
-        const dstPath = path.join(targetPath, entry);
-        copyRecursively(srcPath, dstPath);
-      }
-    } else if (stats.isFile()) {
-      // It's a file, copy it
-      fs.copyFileSync(sourcePath, targetPath);
-    }
-  }
-
-  try {
-    copyRecursively(templatePath, projectPath);
-  } catch (error) {
-    console.error("Error copying template files:", error);
-  }
-}
-
-function replaceOptionsAndImports(
-  projectPath,
-  additionalImports,
-  additionalOptions,
-  additionalStaticServer,
-) {
-  const filePath = path.join(projectPath, "src/globalOptions.ts"); // Adjust the path format
-
-  // Read the file content
-  fs.readFile(
-    path.join(__dirname, "..", "var/globalOptions.ts"),
-    "utf8",
-    (readError, data) => {
-      if (readError) {
-        console.error(`Error reading file: ${readError}`);
-        return;
-      }
-
-      const updatedContent = data.replace("///IMPORTS///", additionalImports)
-        .replace("///OPTIONS///", additionalOptions)
-        .replace("///STATICSERVER///", additionalStaticServer);
-
-      // Write the updated content back to a new file
-      fs.writeFileSync(
-        filePath,
-        updatedContent + "\n export { cryptoKey, globalOptions, fileServer };",
-        {
-          encoding: "utf8",
-        },
-        (writeError) => {
-          if (writeError) {
-            console.error(`Error writing file: ${writeError}`);
-            return;
-          }
-        },
-      );
-    },
-  );
-}
-const listOfImports = (arr) =>
-  arr.reduce((acc, v) =>
-    acc +
-    "import " + v + "P" + ' from "./plugins/' + v + '.ts"\n', "");
-
-function checkPackageManager(packageManager) {
-  return new Promise((resolve) => {
-    exec(`${packageManager} -v`, (error, stdout, stderr) => {
-      if (error) {
-        resolve(null); // Package manager not found
-      } else {
-        resolve(packageManager); // Return the version number
-      }
-    });
-  });
-}
