@@ -9,7 +9,9 @@ const path = globalOptions.hasName;
 export default wrap({
   ...globalOptions,
   //setting name of this dir
-  startWith: "/api",
+  wrap: {
+    startWith: "/crud",
+  },
 })()
   .union(crud.unwrap())
   .customPetition({

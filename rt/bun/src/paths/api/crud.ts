@@ -5,7 +5,12 @@ import { isValidUser } from "../../resolve/api.ts";
 
 const path = globalOptions.hasName;
 
-export default wrap({ ...globalOptions, startWith: "/crud" })()
+export default wrap({
+  ...globalOptions,
+  wrap: {
+    startWith: "/crud",
+  },
+})()
   .customPetition({
     path: "/getAll",
     method: "POST",
