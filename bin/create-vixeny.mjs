@@ -274,7 +274,7 @@ const fronted = async () => {
         copyTemplateFiles("css/" + answers.style, projectPath);
         copyTemplateFiles("src/", projectPath);
         listOfPlugins.forEach((x) =>
-          copyTemplateFiles("plugins/" + x + "/", projectPath)
+          copyTemplateFiles("pluginsPerspective/" + x + "/", projectPath)
         );
 
         const importedList = listOfImports(listOfPlugins);

@@ -1,5 +1,5 @@
 {
   "imports": {
-    "vixeny": "jsr:vixeny/core"
+    "vixeny": "jsr:@vixeny/core"
   }
 }
