@@ -3,7 +3,12 @@ import inquirer from "inquirer";
 import { exec } from "node:child_process";
 import fs from "fs";
 import path from "path";
-import { goodByeMessage, listOfImports, terminalSpace , checkPackageManager} from "./utils.mjs";
+import {
+  checkPackageManager,
+  goodByeMessage,
+  listOfImports,
+  terminalSpace,
+} from "./utils.mjs";
 import {
   __dirname,
   __filename,
@@ -11,11 +16,8 @@ import {
   questionsForBackendTemplate,
   questionsForTemplate,
 } from "./config.mjs";
-import {
-  copyTemplateFiles,
-  replaceOptionsAndImports
-} from "./io.mjs"
-
+import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
+import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
 terminalSpace();
 console.log(
@@ -63,7 +65,6 @@ const onlyBackend = async () => {
       }
 
       // Initialize npm project
-      // Initialize npm project
       exec(`${packageManager} init -y`, { cwd: projectPath }, (error) => {
         if (error) {
           console.error(`Failed to initialize the project: ${error}`);
@@ -98,6 +99,8 @@ const onlyBackend = async () => {
               "bun-types": "^1.0.2",
             };
 
+            // injecting dependecies
+            packageJson.dependencies = toReduceDep(answers, packageJson.dependencies, injectPlugins);
             packageJson.main = "main.ts";
 
             fs.writeFile(
@@ -112,6 +115,10 @@ const onlyBackend = async () => {
             );
 
             copyTemplateFiles("onlyBackend/" + answers.runtime, projectPath);
+            answers?.plugins.forEach(
+              (plugin) =>
+                copyTemplateFiles("plugins/" + plugin + "/", projectPath),
+            );
           }
         });
       });
@@ -158,7 +165,7 @@ const fronted = async () => {
       fs.readFile(packageJsonPath, "utf8", (err, data) => {
         if (err) return console.error(`Failed to read package.json: ${err}`);
 
-        const packageJson = JSON.parse(data);
+        let packageJson = JSON.parse(data);
         packageJson.scripts = {
           ...packageJson.scripts,
           start: answers.runtime === "deno"
@@ -188,64 +195,15 @@ const fronted = async () => {
             "esbuild": "^0.20.1",
           };
 
-          // pug
-          if (
-            answers.installationChoice === "pug" ||
-            answers.template.find((x) => x === "pug")
-          ) {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "pug": "^3.0.2",
-            };
-          }
-          // react
-          if (
-            answers.installationChoice === "jsx" ||
-            answers.installationChoice === "tsx" ||
-            answers.template.find((x) => x === "jsx" || x === "tsx")
-          ) {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "react": "^18.2.0",
-              "react-dom": "^18.2.0",
-            };
-          }
-          // ejs
-          if (
-            answers.installationChoice === "ejs" ||
-            answers.template.find((x) => x === "ejs")
-          ) {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "ejs": "^3.1.9",
-            };
-          }
-
-          if (
-            answers.style === "sass" ||
-            answers.template.find((x) => x === "sass")
-          ) {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "sass": "^1.71.0",
-            };
-          }
-
-          if (
-            answers.style === "postcss" ||
-            answers.template.find((x) => x === "postcss")
-          ) {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "autoprefixer": "^10.4.17",
-              "postcss": "^8.4.35",
-              "postcss-nested": "^6.0.1",
-            };
-          }
+          packageJson.dependencies = toReduceDep(answers, packageJson.dependencies, {
+            ...injectTemplates,
+            ...injectPlugins
+          });
         }
 
         packageJson.main = "main.ts";
 
+    
         fs.writeFile(
           packageJsonPath,
           JSON.stringify(packageJson, null, 2),
@@ -256,8 +214,8 @@ const fronted = async () => {
             }
           },
         );
-        //Get the template using
-        const listOfPlugins = [
+        //Get the template 
+        const listOfTemplates = [
           answers.installationChoice,
           answers.style,
           "typescript",
@@ -273,12 +231,18 @@ const fronted = async () => {
         copyTemplateFiles("rt/" + answers.runtime, projectPath);
         copyTemplateFiles("css/" + answers.style, projectPath);
         copyTemplateFiles("src/", projectPath);
-        listOfPlugins.forEach((x) =>
-          copyTemplateFiles("pluginsPerspective/" + x + "/", projectPath)
+        listOfTemplates.forEach((template) =>
+          copyTemplateFiles("pluginsPerspective/" + template + "/", projectPath)
         );
 
-        const importedList = listOfImports(listOfPlugins);
-        const listForRemplace = listOfPlugins.map((x) => x + "P");
+        answers?.plugins.forEach(
+          (plugin) => copyTemplateFiles("plugins/" + plugin + "/", projectPath),
+        );
+
+        const importedList = listOfImports(
+          listOfTemplates.concat(answers?.plugins ?? []),
+        );
+        const listForRemplace = listOfTemplates.map((x) => x + "P");
 
         switch (answers.installationChoice) {
           case "pug":
@@ -382,5 +346,3 @@ const fileServer = {
     });
   });
 };
-
-

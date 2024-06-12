@@ -1,5 +1,7 @@
 {
   "imports": {
-    "vixeny": "jsr:@vixeny/core"
+    "vixeny": "jsr:@vixeny/core",
+    "@feathersjs/schema": "npm:@feathersjs/schema",
+    "@sinclair/typebox": "npm:@sinclair/typebox@latest"
   }
 }

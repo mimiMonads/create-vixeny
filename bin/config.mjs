@@ -21,6 +21,12 @@ export const __dirname = path.dirname(__filename);
 
 const repeatedQuestions = [
   {
+    type: "checkbox",
+    name: "plugins",
+    message: "Do you want to add any plugins?",
+    choices: ["typebox"],
+  },
+  {
     type: "list",
     name: "runtime",
     message: "Which runtime would you prefer?",
@@ -53,8 +59,6 @@ export const questionForMain = [
     choices: ["with fronted (recommended)", "just backend"],
   },
 ];
-
-
 
 export const questionsForTemplate = [
   {

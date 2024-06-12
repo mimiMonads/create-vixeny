@@ -22,8 +22,11 @@
     "url": "https://github.com/mimiMonads/create-vixeny/issues"
   },
   "homepage": "https://github.com/mimiMonads/create-vixeny#readme",
+  "devDependencies": {
+    "vixeny": "^0.1.10",
+    "vixeny-plugins": "0.0.2"
+  },
   "dependencies": {
-    "inquirer": "^9.2.14",
-    "vixeny": "^0.1.10"
+    "inquirer": "^9.2.14"
   }
 }
