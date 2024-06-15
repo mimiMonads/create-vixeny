@@ -100,7 +100,11 @@ const onlyBackend = async () => {
             };
 
             // injecting dependecies
-            packageJson.dependencies = toReduceDep(answers, packageJson.dependencies, injectPlugins);
+            packageJson.dependencies = toReduceDep(
+              answers,
+              packageJson.dependencies,
+              injectPlugins,
+            );
             packageJson.main = "main.ts";
 
             fs.writeFile(
@@ -195,15 +199,18 @@ const fronted = async () => {
             "esbuild": "^0.20.1",
           };
 
-          packageJson.dependencies = toReduceDep(answers, packageJson.dependencies, {
-            ...injectTemplates,
-            ...injectPlugins
-          });
+          packageJson.dependencies = toReduceDep(
+            answers,
+            packageJson.dependencies,
+            {
+              ...injectTemplates,
+              ...injectPlugins,
+            },
+          );
         }
 
         packageJson.main = "main.ts";
 
-    
         fs.writeFile(
           packageJsonPath,
           JSON.stringify(packageJson, null, 2),
@@ -214,7 +221,7 @@ const fronted = async () => {
             }
           },
         );
-        //Get the template 
+        //Get the template
         const listOfTemplates = [
           answers.installationChoice,
           answers.style,

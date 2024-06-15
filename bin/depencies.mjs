@@ -50,7 +50,7 @@ export const injectTemplates = {
 
 export const injectPlugins = {
   typebox: (answers, dependencies) =>
-    answers.plugins?.find((x) => x === "typebox") 
+    answers.plugins?.find((x) => x === "typebox")
       ? {
         ...dependencies,
         "@feathersjs/schema": "latest",
