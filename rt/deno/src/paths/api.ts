@@ -10,7 +10,7 @@ export default wrap({
   ...globalOptions,
   //setting name of this dir
   wrap: {
-    startWith: "/crud",
+    startWith: "/api",
   },
 })()
   .union(crud.unwrap())

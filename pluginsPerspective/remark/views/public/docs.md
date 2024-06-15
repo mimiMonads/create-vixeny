@@ -15,21 +15,6 @@
 
 <main>
 
-1. [Introduction to `create-vixeny`](#introduction-to-create-vixeny)
-   - [Petitions](#petitions)
-   - [Wrap](#wrap)
-     - [Debugging](#debugging)
-     - [Testing](#testing)
-     - [Mocking](#mocking)
-     - [Join](#join)
-2. [Resolution](#resolution)
-   - [Morphism](#morphism)
-3. [Resolve Properties](#resolve-properties)
-   - [Resolution](#resolution-1)
-   - [SyncAgnostic](#syncagnostic)
-   - [Composable and Reusable](#composable-and-reusable)
-4. [Optimizer](#optimizer)
-
 # Introduction to `create-vixeny`
 
 Welcome to the `create-vixeny` documentation. Our aim is to provide you with
