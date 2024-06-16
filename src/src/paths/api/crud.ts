@@ -15,13 +15,13 @@ export default wrap({
     path: "/getAll",
     method: "POST",
     branch: {
-      getAll: getFirst10,
+      getFirst10,
     },
-    crypto: { ...cryptoKey, token: { jwtToken: {} } },
-    f: (c) =>
-      c.token.jwtToken &&
-        (c.token.jwtToken as ({ iat: number })).iat > Date.now()
-        ? new Response(JSON.stringify(c.branch.getAll(null)))
+    crypto: { ...cryptoKey },
+    f: ({ token , branch }) =>
+      token.jwtToken &&
+        (token.jwtToken as ({ iat: number })).iat > Date.now()
+        ? new Response(JSON.stringify(branch.getFirst10(null)))
         : new Response(null, {
           status: 401,
         }),
@@ -30,13 +30,13 @@ export default wrap({
     path: "/delete/:id",
     method: "POST",
     branch: {
-      deleteByID: deleteByID,
+      deleteByID,
     },
     crypto: { ...cryptoKey, token: { jwtToken: {} } },
-    f: (c) =>
-      c.token.jwtToken &&
-        (c.token.jwtToken as ({ iat: number })).iat > Date.now()
-        ? new Response(void c.branch.deleteByID(c.param.id) ?? null)
+    f: ({ token , branch , param}) =>
+      token.jwtToken &&
+        (token.jwtToken as ({ iat: number })).iat > Date.now()
+        ? new Response(void branch.deleteByID(param.id) ?? null)
         : new Response(null, {
           status: 401,
         }),
@@ -45,21 +45,21 @@ export default wrap({
     path: "/create",
     method: "POST",
     resolve: {
-      isValid: isValidUser,
+      isValidUser,
     },
     branch: {
-      createNew: addItem,
+      addItem,
     },
-    f: (c) => {
+    f: ({ resolve , branch}) => {
       if (
-        c.resolve.isValid === null
+        resolve.isValidUser === null
       ) {
         return new Response(null, {
           status: 401,
         });
       }
-      const user = c.resolve.isValid.get("name") ?? null,
-        price = c.resolve.isValid.get("price") ?? null;
+      const user = resolve.isValidUser.get("name") ?? null,
+        price = resolve.isValidUser.get("price") ?? null;
 
       if (user === null || price === null) {
         return new Response(null, {
@@ -67,7 +67,7 @@ export default wrap({
         });
       }
 
-      c.branch.createNew([user, price]);
+      branch.addItem([user, price]);
 
       return new Response(null, {
         status: 302,

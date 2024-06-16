@@ -18,18 +18,19 @@ export default wrap({
     path: "/panel",
     // resolve isUserResolve can be used instead
     resolve: {
-      isValid: validToken,
+      validToken,
     },
-    f: async (f) => {
-      return f.resolve.isValid !== null
+    f: async ({ resolve, io}) => {
+
+      return resolve.validToken !== null
         ? new Response(
-          await Bun.file("./views/private/panel.html").text(),
+          await io.textOf("./views/private/panel.html"),
           {
             headers: new Headers([["Content-Type", "text/html"]]),
           },
         )
         : new Response(
-          await Bun.file("./views/public/login.html").text(),
+          await io.textOf("./views/public/login.html"),
           {
             headers: new Headers([["Content-Type", "text/html"]]),
             status: 401,
@@ -42,18 +43,18 @@ export default wrap({
     method: "POST",
     crypto: { ...cryptoKey },
     resolve: {
-      formData: getFormDataResolve,
+      getFormDataResolve,
     },
     branch: {
-      getUser: getUserBranch,
+     getUserBranch,
     },
-    f: async (f) => {
-      const user = f.resolve.formData.get("user") ?? null,
-        pass = f.resolve.formData.get("pass") ?? null;
+    f: async ({ resolve, io , branch , sign , date}) => {
+      const user = resolve.getFormDataResolve.get("user") ?? null,
+        pass = resolve.getFormDataResolve.get("pass") ?? null;
 
       if (!user || !pass) {
         return new Response(
-          await Bun.file("./views/public/login.html").text(),
+          await io.textOf("./views/public/login.html"),
           {
             headers: new Headers([["Content-Type", "text/html"], [
               "Set-Cookie",
@@ -64,7 +65,7 @@ export default wrap({
         );
       }
 
-      const sql = f.branch.getUser([user, pass]);
+      const sql = branch.getUserBranch([user, pass]);
 
       if (sql.length > 0) {
         return new Response(null, {
@@ -73,9 +74,9 @@ export default wrap({
             [
               "Set-Cookie",
               `jwtToken=${
-                f.sign({
+                sign({
                   user: sql[0][1],
-                  iat: f.date + 600000,
+                  iat: date + 600000,
                 })
               }; Path=/; HttpOnly`,
             ],
@@ -87,7 +88,7 @@ export default wrap({
         });
       }
       return new Response(
-        await Bun.file("./views/public/login.html").text(),
+        await io.textOf("./views/public/login.html"),
         {
           headers: new Headers([["Content-Type", "text/html"]]),
           status: 401,
