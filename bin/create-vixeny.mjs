@@ -19,6 +19,8 @@ import {
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
+
+
 terminalSpace();
 console.log(
   "\x1b[31m%s\x1b[0m" + // Red for V

@@ -11,32 +11,32 @@ const getFirst10 = petitions.branch()({
 });
 
 const getUserBranch = petitions.branch()({
-  arguments: {} as any,
+  args: {} as any,
   f: (c) => {
     const stmt = db.prepare(
       "SELECT * FROM users WHERE username = ? AND password = ?",
     );
-    const user = stmt.value<[any]>(c.arguments);
+    const user = stmt.value<[any]>(c.args);
     stmt.finalize();
     return user || null;
   },
 });
 
 const deleteByID = petitions.branch()({
-  arguments: {} as any,
+  args: {} as any,
   f: (c) => {
     const stmt = db.prepare("DELETE FROM items WHERE id = ?");
-    stmt.run(c.arguments);
+    stmt.run(c.args);
     stmt.finalize();
     return true;
   },
 });
 
 const addItem = petitions.branch()({
-  arguments: {} as any,
+  args: {} as any,
   f: (c) => {
     const stmt = db.prepare("INSERT INTO items (name, price) VALUES (?, ?)");
-    stmt.run(c.arguments);
+    stmt.run(c.args);
     stmt.finalize();
     return true;
   },
