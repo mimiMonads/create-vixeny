@@ -1,7 +1,7 @@
 import { wrap } from "vixeny";
 import { cryptoKey, globalOptions } from "../../globalOptions.ts";
 import { addItem, deleteByID, getFirst10 } from "../../branch/api.ts";
-import { isValidUser } from "../../resolve/api.ts";
+import { isValidUser, validToken } from "../../resolve/api.ts";
 
 const path = globalOptions.hasName;
 
@@ -14,13 +14,15 @@ export default wrap({
   .customPetition({
     path: "/getAll",
     method: "POST",
+    resolve:{
+      validToken
+    },
     branch: {
       getFirst10,
     },
     crypto: { ...cryptoKey },
-    f: ({ token , branch }) =>
-      token.jwtToken &&
-        (token.jwtToken as ({ iat: number })).iat > Date.now()
+    f: ({ resolve , branch }) =>
+    resolve.validToken 
         ? new Response(JSON.stringify(branch.getFirst10(null)))
         : new Response(null, {
           status: 401,
@@ -29,13 +31,14 @@ export default wrap({
   .customPetition({
     path: "/delete/:id",
     method: "POST",
+    resolve:{
+      validToken
+    },
     branch: {
       deleteByID,
     },
-    crypto: { ...cryptoKey, token: { jwtToken: {} } },
-    f: ({ token , branch , param}) =>
-      token.jwtToken &&
-        (token.jwtToken as ({ iat: number })).iat > Date.now()
+    f: ({ branch , param , resolve}) =>
+    resolve.validToken 
         ? new Response(void branch.deleteByID(param.id) ?? null)
         : new Response(null, {
           status: 401,
