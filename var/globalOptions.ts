@@ -1,4 +1,5 @@
 import { plugins, runtime } from "vixeny";
+import { injectable } from "vixeny-perspective";
 
 ///IMPORTS///
 
@@ -6,15 +7,21 @@ import { plugins, runtime } from "vixeny";
 
 const values = runtime.arguments();
 
+
 const globalOptions = plugins.globalOptions({
-  hasName: "http://localhost:3000/",
   ...(values?.liveReloading
     ? {
-      enableLiveReloading: true,
+      debugging:{
+        injectHtml: injectable({
+          port: 3000
+        })
+      }
     }
     : {}),
   ///OPTIONS///
 });
+
+
 
 const cryptoKey = {
   globalKey: crypto.randomUUID(),

@@ -46,6 +46,18 @@ export const injectTemplates = {
         "postcss-nested": "^6.0.1",
       }
       : dependencies,
+  remark: (answers, dependencies) =>
+    answers.style === "postcss" ||
+      answers.template?.find((x) => x === "postcss")
+      ? {
+        ...dependencies,
+        "rehype-format": "^5.0.0",
+        "rehype-stringify": "^10.0.0",
+        "remark-parse": "^11.0.0",
+        "remark-rehype": "^11.1.0",
+        "unified": "^11.0.4",
+      }
+      : dependencies,
 };
 
 export const injectPlugins = {

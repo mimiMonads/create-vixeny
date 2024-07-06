@@ -1,50 +1,76 @@
-import chokidar from "chokidar";
-import { spawn } from "node:child_process";
+const fs = require("fs");
+const path = require("path");
 
 let bunProcess = null;
 
+const formatTime = () => {
+  return new Date().toLocaleTimeString();
+};
+
 const runBun = () => {
   if (bunProcess !== null) {
-    bunProcess.kill(); // Kill the previous process, if it exists
+    bunProcess.kill(); 
     bunProcess = null;
     console.clear();
   }
 
   // Start the Bun process
-  bunProcess = spawn("bun", ["run", "main.ts", "--liveReloading"], {
-    stdio: "inherit",
+  bunProcess = Bun.spawn(["bun", "run", "main.ts", "--liveReloading"], {
+    stdio: ["inherit", "inherit", "inherit"]
   });
 
-  bunProcess.on("error", (err) => {
-    console.error(`Failed to start subprocess: ${err}`);
+  bunProcess.exited.then(
+    //(exitCode) => {console.log(`[${formatTime()}] Process exited with code: ${exitCode}`);}
+    null)
+    .catch(
+    //  (error) => {console.error(`[${formatTime()}] Failed to start subprocess: ${error}`);}
+      null
+    );
+};
+
+const watchedDir = path.resolve("./");
+let lastModified = {};
+
+const pollFiles = (directory) => {
+  fs.readdir(directory, { withFileTypes: true }, (err, files) => {
+    if (err) {
+      console.error(`[${formatTime()}] ${err}`);
+      return;
+    }
+
+    files.forEach(file => {
+      const filePath = path.join(directory, file.name);
+      if (file.isDirectory()) {
+        if (file.name !== "node_modules") { 
+          pollFiles(filePath); 
+        }
+      } else {
+        fs.stat(filePath, (err, stats) => {
+          if (err) {
+            return;
+          }
+
+          const lastModifiedTime = stats.mtime.getTime();
+          if (lastModified[filePath] !== lastModifiedTime) {
+            lastModified[filePath] = lastModifiedTime;
+            console.log(`[${formatTime()}] File changed: ${filePath}`);
+            runBun();
+          }
+        });
+      }
+    });
   });
 };
 
-// Initialize chokidar to watch all files except those in node_modules and dotted files
-const watcher = chokidar.watch("**/*", {
-  ignored: /(^|[\/\\])(\..|node_modules)/, // Ignore dotted files and node_modules
-  persistent: true,
-});
-
-// Event listeners for the watcher
-watcher
-  .on("add", (path) => {
-    //console.log(`File ${path} has been added`);
-    runBun();
-  })
-  .on("change", (path) => {
-    //console.log(`File ${path} has been changed`);
-
-    runBun();
-  })
-  .on("unlink", (path) => {
-    //console.log(`File ${path} has been removed`);
-    runBun();
-  });
-
-// Run bun main.ts initially
 runBun();
+setInterval(() => pollFiles(watchedDir), 1000);
 
-// Optional: Clean up on process exit
-process.on("exit", () => watcher.close());
-process.on("SIGINT", () => process.exit()); // Handle Ctrl+C gracefully
+process.on("exit", () => {
+  if (bunProcess) {
+    bunProcess.kill();
+  }
+});
+process.on("SIGINT", () => {
+  console.log(`[${formatTime()}] Terminating...`);
+  process.exit();
+});

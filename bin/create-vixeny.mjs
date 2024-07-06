@@ -19,8 +19,6 @@ import {
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
-
-
 terminalSpace();
 console.log(
   "\x1b[31m%s\x1b[0m" + // Red for V
@@ -185,18 +183,12 @@ const fronted = async () => {
         packageJson.devDependencies = {
           ...packageJson.dependencies,
           "bun-types": "^1.0.2",
-          "chokidar": "^3.6.0",
         };
 
         if (answers.answers !== "deno") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
             "vixeny": "latest",
-            "rehype-format": "^5.0.0",
-            "rehype-stringify": "^10.0.0",
-            "remark-parse": "^11.0.0",
-            "remark-rehype": "^11.1.0",
-            "unified": "^11.0.4",
             "vixeny-perspective": "latest",
             "esbuild": "^0.20.1",
           };
@@ -228,7 +220,6 @@ const fronted = async () => {
           answers.installationChoice,
           answers.style,
           "typescript",
-          "remark",
           ...answers?.template ?? [],
         ]
           .filter((x) => x !== "vanilla");
@@ -266,7 +257,7 @@ cyclePlugin: {
   ...fromPug,
 },`,
               `
-const fileServer = {
+const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
   path: "./views/public/",
@@ -274,7 +265,7 @@ const fileServer = {
   slashIs: "$main",
   //it has options
   template: [${listForRemplace.toString()}]
-};`,
+});`,
             );
             break;
           case "vanilla":
@@ -283,14 +274,14 @@ const fileServer = {
               importedList,
               "",
               `
-const fileServer = {
+const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
   path: "./views/public/",
   removeExtensionOf: [".html"],
   slashIs: "$main",
   template: [${listForRemplace.toString()}]
-};`,
+});`,
             );
           case "jsx":
             replaceOptionsAndImports(
@@ -298,13 +289,13 @@ const fileServer = {
               importedList,
               "",
               `
-  const fileServer = {
+  const fileServer = plugins.fileServer({
     type: "fileServer",
     name: "/",
     path: "./views/public/",
     removeExtensionOf: [".html"],
     slashIs: "$main",
-    template: [${listForRemplace.toString()}]};`,
+    template: [${listForRemplace.toString()}]});`,
             );
             break;
           case "tsx":
@@ -313,14 +304,14 @@ const fileServer = {
               importedList,
               "",
               `
-  const fileServer = {
+  const fileServer = plugins.fileServer({
     type: "fileServer",
     name: "/",
     path: "./views/public/",
     slashIs: "$main",
     removeExtensionOf: [".html"],
     template: [${listForRemplace.toString()}]
-  };`,
+  });`,
             );
             break;
           case "ejs":
@@ -335,14 +326,14 @@ cyclePlugin: {
   ...fromEjs,
 },`,
               `
-const fileServer = {
+const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
   path: "./views/public/",
   removeExtensionOf: [".html"],
   slashIs: "$main",
   template: [${listForRemplace.toString()}],
-};`,
+});`,
             );
             break;
         }

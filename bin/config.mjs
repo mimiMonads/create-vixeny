@@ -14,6 +14,7 @@ export const template = [
   { name: "pug", value: "pug" },
   { name: "postcss", value: "postcss" },
   { name: "sass", value: "sass" },
+  { name: "remark", value: "remark" },
 ];
 
 export const __filename = fileURLToPath(import.meta.url);

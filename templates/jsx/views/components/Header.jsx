@@ -6,15 +6,6 @@ const Header = () => (
       <a href="/">
         Home
       </a>
-      <a href="/docs">
-        Docs
-      </a>
-      <a href="/api/panel">
-        Panel
-      </a>
-      <a href="/login">
-        Login
-      </a>
     </nav>
   </header>
 );

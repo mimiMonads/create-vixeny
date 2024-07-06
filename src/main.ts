@@ -1,14 +1,17 @@
 import { vixeny, wrap } from "vixeny";
+import { serve } from "vixeny-perspective";
 import root from "./src/paths/root.ts";
 import { fileServer, globalOptions } from "./src/globalOptions.ts";
 
-Deno.serve(
-  { port: 3000 },
-  vixeny(globalOptions)([
+serve({
+  handler: vixeny(globalOptions)([
     ...wrap(globalOptions)()
       .union(root.unwrap())
       .unwrap(),
     //with static server
     fileServer,
   ]),
-);
+  port: 3000
+});
+
+
