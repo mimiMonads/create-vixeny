@@ -20,6 +20,6 @@ const bodyParser = parser({
   },
 });
 
-export const typebox = {
+export default  {
   typebox: bodyParser,
 };

@@ -244,36 +244,17 @@ const fronted = async () => {
         );
         const listForRemplace = listOfTemplates.map((x) => x + "P");
 
-        switch (answers.installationChoice) {
-          case "pug":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList +
-                'import { pug } from "vixeny-perspective";\n' +
-                'import  * as pugModule  from "pug";\n' +
-                "const fromPug = pug(pugModule)",
-              `
-cyclePlugin: {
-  ...fromPug,
-},`,
-              `
-const fileServer = plugins.fileServer({
-  type: "fileServer",
-  name: "/",
-  path: "./views/public/",
-  removeExtensionOf: [".html"],
-  slashIs: "$main",
-  //it has options
-  template: [${listForRemplace.toString()}]
-});`,
-            );
-            break;
-          case "vanilla":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList,
-              "",
-              `
+        replaceOptionsAndImports(
+          projectPath,
+          importedList,
+          //adding plugins
+          answers?.plugins && answers.plugins.length > 0
+            ? `cyclePlugin: { ${answers.plugins.map(
+              x => "..." + x + 'P, '
+            )}},`
+            : ''
+          ,
+          `
 const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
@@ -282,61 +263,8 @@ const fileServer = plugins.fileServer({
   slashIs: "$main",
   template: [${listForRemplace.toString()}]
 });`,
-            );
-          case "jsx":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList,
-              "",
-              `
-  const fileServer = plugins.fileServer({
-    type: "fileServer",
-    name: "/",
-    path: "./views/public/",
-    removeExtensionOf: [".html"],
-    slashIs: "$main",
-    template: [${listForRemplace.toString()}]});`,
-            );
-            break;
-          case "tsx":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList,
-              "",
-              `
-  const fileServer = plugins.fileServer({
-    type: "fileServer",
-    name: "/",
-    path: "./views/public/",
-    slashIs: "$main",
-    removeExtensionOf: [".html"],
-    template: [${listForRemplace.toString()}]
-  });`,
-            );
-            break;
-          case "ejs":
-            replaceOptionsAndImports(
-              projectPath,
-              importedList +
-                'import { ejs , ejsStaticServerPlugin } from "vixeny-perspective";\n' +
-                'import  * as ejsModule  from "ejs";\n' +
-                "const fromEjs = ejs(ejsModule)",
-              `,
-cyclePlugin: {
-  ...fromEjs,
-},`,
-              `
-const fileServer = plugins.fileServer({
-  type: "fileServer",
-  name: "/",
-  path: "./views/public/",
-  removeExtensionOf: [".html"],
-  slashIs: "$main",
-  template: [${listForRemplace.toString()}],
-});`,
-            );
-            break;
-        }
+        )
+       
         goodByeMessage(
           answers.runtime,
           currPath,
