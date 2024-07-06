@@ -1,4 +1,4 @@
-import { vixeny, wrap } from "vixeny";
+import { runtime, vixeny, wrap } from "vixeny";
 import { serve } from "vixeny-perspective";
 import root from "./src/paths/root.ts";
 import { fileServer, globalOptions } from "./src/globalOptions.ts";
@@ -11,7 +11,7 @@ serve({
     //with static server
     fileServer,
   ]),
-  port: 3000
+  liveReolading: runtime.arguments()?.liveReloading ? true : false,
+  hostname: "127.0.0.1",
+  port: 3000,
 });
-
-

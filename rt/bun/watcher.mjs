@@ -9,22 +9,23 @@ const formatTime = () => {
 
 const runBun = () => {
   if (bunProcess !== null) {
-    bunProcess.kill(); 
+    bunProcess.kill();
     bunProcess = null;
     console.clear();
   }
 
   // Start the Bun process
   bunProcess = Bun.spawn(["bun", "run", "main.ts", "--liveReloading"], {
-    stdio: ["inherit", "inherit", "inherit"]
+    stdio: ["inherit", "inherit", "inherit"],
   });
 
   bunProcess.exited.then(
     //(exitCode) => {console.log(`[${formatTime()}] Process exited with code: ${exitCode}`);}
-    null)
+    null,
+  )
     .catch(
-    //  (error) => {console.error(`[${formatTime()}] Failed to start subprocess: ${error}`);}
-      null
+      //  (error) => {console.error(`[${formatTime()}] Failed to start subprocess: ${error}`);}
+      null,
     );
 };
 
@@ -38,11 +39,11 @@ const pollFiles = (directory) => {
       return;
     }
 
-    files.forEach(file => {
+    files.forEach((file) => {
       const filePath = path.join(directory, file.name);
       if (file.isDirectory()) {
-        if (file.name !== "node_modules") { 
-          pollFiles(filePath); 
+        if (file.name !== "node_modules") {
+          pollFiles(filePath);
         }
       } else {
         fs.stat(filePath, (err, stats) => {
@@ -63,7 +64,7 @@ const pollFiles = (directory) => {
 };
 
 runBun();
-setInterval(() => pollFiles(watchedDir), 1000);
+setInterval(() => pollFiles(watchedDir), 250);
 
 process.on("exit", () => {
   if (bunProcess) {

@@ -3,52 +3,47 @@ extends ../layouts/layout.pug
 block content
   main
     section
-      h1 Welcome to Create-Vixeny
-    
-    section
-      h2 This Template
-      p In this project, you will find a logging system integrated with SQL databases.
-      p If you have never used Vixeny, you can find a small guide at 
-        code /docs
-    
+      h1 Welcome to Create-Vixeny!
+
     section
       h2 Project Structure
-      p There are two main components:
+      p Our project consists of two main components:
       ul
-        li 
-          strong Dynamic Server (src):
-          |  Here, you can find dynamic content handling, including examples of 
-          code wrap
-          | , 
-          code resolve
-          | , and 
-          code branch
-          |  functions.
-        li 
-          strong Static Server (views):
-          |  This is where all static files are hosted. Specifically, the 
+        li
+          strong Dynamic Server (
+          code src
+          strong ): This is where all the route functions are located.
+        li
+          strong Static Server (
+          code views
+          strong ): This hosts all static files. Specifically, the 
           code views/public
-          |  directory will serve as the home for these files, ready to be accessed by users. This file is 
+          strong directory will serve as the home for these files, which users can access. For instance, the file 
           code ./views/public/$main.html
-          | .
-      p Additionally, there are two plugins active:
+          strong is found here.
+      p Additionally, we have one active plugin:
       ul
-        li 
+        li
           strong esbuild:
-          |  Converts TypeScript (.ts) files to ECMAScript Modules (.mjs).
-        li 
-          strong Remark:
-          |  Transforms Markdown (.md) files into HTML, ensuring that documentation and guides are easily accessible.
-      blockquote Remember, Vixeny does not have a 
+          |  This plugin converts all TypeScript files in 
+          code views/public
+          |  (.ts) to ECMAScript Modules (.mjs). You can find an example at 
+          code /views/public/mjs/main.ts.
+      blockquote Remember, Vixeny does not use a 
         code dist
-        |  folder; everything is lazily composed on the fly. For example, a file named 
+        |  folder; everything is composed on-the-fly. For example, a file named 
         code example.md
         |  will be resolved as 
         code example.html
         |  and accessed as 
         code example
         | .
-    
+
+    section
+      p For more information, visit the 
+        a(href="https://vixeny.dev/" target="_blank") official Vixeny website
+        | .
+        
     section
       h2 Join Our Community
       p Be a part of our journey by joining our Discord community. Here, you can stay updated on the latest developments, provide feedback, and interact with the team and other users.
