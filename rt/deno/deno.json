@@ -2,7 +2,7 @@
   "imports": {
     "vixeny": "jsr:@vixeny/core@0.1.45",
     "vixeny-perspective": "https://deno.land/x/vixeny_prespective@v0.3.2/main.ts",
-    "vixeny-plugins": "jsr@vixeny/plugins@0.0.2",
+    "vixeny-plugins": "jsr:@vixeny/plugins@0.0.2",
     "ejs": "npm:ejs",
     "pug": "npm:pug",
     "unified": "npm:unified",
