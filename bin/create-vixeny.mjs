@@ -258,9 +258,10 @@ const fronted = async () => {
 const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
-  path: "./views/public/",
+  path: "/views/public/",
   removeExtensionOf: [".html"],
   slashIs: "$main",
+  mime: true,
   template: [${listForRemplace.toString()}]
 });`,
         )
