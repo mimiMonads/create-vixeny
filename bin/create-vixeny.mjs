@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
 import { exec } from "node:child_process";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import {
   checkPackageManager,
   goodByeMessage,
@@ -32,12 +32,13 @@ console.log(
   "x",
   "e",
   "n",
-  "y"
+  "y",
 );
 terminalSpace();
 
-const packageManager =
-  (await checkPackageManager("bun")) ?? (await checkPackageManager("deno"));
+const packageManager = ( await checkPackageManager("npm")  ?? await checkPackageManager("bun")) ??
+  (await checkPackageManager("deno") ?? await checkPackageManager("yarn") ??
+  await checkPackageManager("pnpm"));
 
 inquirer
   .prompt(questionForMain)
@@ -84,14 +85,12 @@ const onlyBackend = async () => {
         const packageJson = JSON.parse(data);
         packageJson.scripts = {
           ...packageJson.scripts,
-          start:
-            answers.runtime === "deno"
-              ? "deno run -A --unstable-ffi main.ts"
-              : "bun run main.ts",
-          dev:
-            answers.runtime === "deno"
-              ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-              : "bun run watcher.mjs",
+          start: answers.runtime === "deno"
+            ? "deno run -A --unstable-ffi main.ts"
+            : "bun run main.ts",
+          dev: answers.runtime === "deno"
+            ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
+            : "bun run watcher.mjs",
         };
 
         if (answers.answers !== "deno") {
@@ -109,7 +108,7 @@ const onlyBackend = async () => {
           packageJson.dependencies = toReduceDep(
             answers,
             packageJson.dependencies,
-            injectPlugins
+            injectPlugins,
           );
           packageJson.main = "main.ts";
 
@@ -121,7 +120,7 @@ const onlyBackend = async () => {
               if (err) {
                 return console.error(`Failed to write package.json: ${err}`);
               }
-            }
+            },
           );
 
           copyTemplateFiles("onlyBackend/" + answers.runtime, projectPath);
@@ -172,14 +171,12 @@ const fronted = async () => {
         let packageJson = JSON.parse(data);
         packageJson.scripts = {
           ...packageJson.scripts,
-          start:
-            answers.runtime === "deno"
-              ? "deno run -A --unstable-ffi main.ts"
-              : "bun run main.ts",
-          dev:
-            answers.runtime === "deno"
-              ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-              : "bun run watcher.mjs",
+          start: answers.runtime === "deno"
+            ? "deno run -A --unstable-ffi main.ts"
+            : "bun run main.ts",
+          dev: answers.runtime === "deno"
+            ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
+            : "bun run watcher.mjs",
         };
 
         packageJson.devDependencies = {
@@ -201,7 +198,7 @@ const fronted = async () => {
             {
               ...injectTemplates,
               ...injectPlugins,
-            }
+            },
           );
         }
 
@@ -215,7 +212,7 @@ const fronted = async () => {
             if (err) {
               return console.error(`Failed to write package.json: ${err}`);
             }
-          }
+          },
         );
         //Get the template
         const listOfTemplates = [
@@ -227,7 +224,7 @@ const fronted = async () => {
 
         copyTemplateFiles(
           "templates/" + answers.installationChoice,
-          projectPath
+          projectPath,
         );
         copyTemplateFiles("rt/" + answers.runtime, projectPath);
         copyTemplateFiles("css/" + answers.style, projectPath);
@@ -241,7 +238,7 @@ const fronted = async () => {
         );
 
         const importedList = listOfImports(
-          listOfTemplates.concat(answers?.plugins ?? [])
+          listOfTemplates.concat(answers?.plugins ?? []),
         );
         const listForRemplace = listOfTemplates.map((x) => x + "P");
 
@@ -250,9 +247,11 @@ const fronted = async () => {
           importedList,
           //adding plugins
           answers?.plugins && answers.plugins.length > 0
-            ? `cyclePlugin: { ${answers.plugins.map(
-                (x) => "..." + x + "P, "
-              )}},`
+            ? `cyclePlugin: { ${
+              answers.plugins.map(
+                (x) => "..." + x + "P, ",
+              )
+            }},`
             : "",
           `
 const fileServer = plugins.fileServer({
@@ -263,7 +262,7 @@ const fileServer = plugins.fileServer({
   slashIs: "$main",
   mime: true,
   template: [${listForRemplace.toString()}]
-});`
+});`,
         );
 
         goodByeMessage(answers.runtime, currPath, projectName);

@@ -1,5 +1,5 @@
-import { fileURLToPath } from "url";
-import path from "path";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 export const colors = {
   A: `\x1b[31m`,
   B: `\x1b[32m`,
