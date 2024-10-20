@@ -57,7 +57,7 @@ export const questionForMain = [
     type: "list",
     name: "main",
     message: "Welcome to Vixeny!, what kind of template do you need?",
-    choices: ["with fronted (recommended)", "just backend"],
+    choices: ["with fronted", "just backend"],
   },
 ];
 
@@ -67,8 +67,12 @@ export const questionsForTemplate = [
     name: "installationChoice",
     message: " Which HTML template would you like?",
     choices: [
-     // "vanilla", 
-      "pug", "ejs", "jsx", "tsx"],
+      // "vanilla",
+      "pug",
+      "ejs",
+      "jsx",
+      "tsx",
+    ],
   },
   {
     type: "list",
@@ -85,6 +89,4 @@ export const questionsForTemplate = [
   ...repeatedQuestions,
 ];
 
-export const questionsForBackendTemplate = [
-  ...repeatedQuestions,
-];
+export const questionsForBackendTemplate = [...repeatedQuestions];

@@ -32,108 +32,108 @@ console.log(
   "x",
   "e",
   "n",
-  "y",
+  "y"
 );
 terminalSpace();
 
-const packageManager = await checkPackageManager("npm") ??
-  await checkPackageManager("yarn") ??
-  await checkPackageManager("pnpm");
+const packageManager =
+  (await checkPackageManager("bun")) ?? (await checkPackageManager("deno"));
 
-inquirer.prompt(questionForMain)
+inquirer
+  .prompt(questionForMain)
   .then((answers) =>
-    answers.main === "with fronted (recommended)" ? fronted() : onlyBackend()
+    answers.main === "with fronted" ? fronted() : onlyBackend()
   );
 const onlyBackend = async () => {
-  inquirer.prompt(questionsForBackendTemplate).then(
-    (answers) => {
-      // Your previous answers handling here
-      let projectName = answers.projectName;
-      const currPath = path.basename(process.cwd());
-      if (projectName === ".") projectName = currPath;
+  inquirer.prompt(questionsForBackendTemplate).then((answers) => {
+    // Your previous answers handling here
+    if (!packageManager) {
+      console.error("Can't find Bun or Deno package manager.");
+      return;
+    }
 
-      let projectPath = "";
-      if (projectName != currPath) {
-        projectPath = path.join(process.cwd(), projectName);
-      } else {
-        projectPath = process.cwd();
+    let projectName = answers.projectName;
+    const currPath = path.basename(process.cwd());
+    if (projectName === ".") projectName = currPath;
+
+    let projectPath = "";
+    if (projectName != currPath) {
+      projectPath = path.join(process.cwd(), projectName);
+    } else {
+      projectPath = process.cwd();
+    }
+
+    // Create project directory if it doesn't exist
+    if (!fs.existsSync(projectPath)) {
+      fs.mkdirSync(projectPath);
+    }
+
+    // Initialize npm project
+    exec(`${packageManager} init -y`, { cwd: projectPath }, (error) => {
+      if (error) {
+        console.error(`Failed to initialize the project: ${error}`);
+        return;
       }
 
-      // Create project directory if it doesn't exist
-      if (!fs.existsSync(projectPath)) {
-        fs.mkdirSync(projectPath);
-      }
+      console.log("Project initialized successfully.");
 
-      // Initialize npm project
-      exec(`${packageManager} init -y`, { cwd: projectPath }, (error) => {
-        if (error) {
-          console.error(`Failed to initialize the project: ${error}`);
-          return;
-        }
+      const packageJsonPath = path.join(projectPath, "package.json");
+      fs.readFile(packageJsonPath, "utf8", (err, data) => {
+        if (err) return console.error(`Failed to read package.json: ${err}`);
 
-        console.log("Project initialized successfully.");
-
-        const packageJsonPath = path.join(projectPath, "package.json");
-        fs.readFile(packageJsonPath, "utf8", (err, data) => {
-          if (err) return console.error(`Failed to read package.json: ${err}`);
-
-          const packageJson = JSON.parse(data);
-          packageJson.scripts = {
-            ...packageJson.scripts,
-            start: answers.runtime === "deno"
+        const packageJson = JSON.parse(data);
+        packageJson.scripts = {
+          ...packageJson.scripts,
+          start:
+            answers.runtime === "deno"
               ? "deno run -A --unstable-ffi main.ts"
               : "bun run main.ts",
-            dev: answers.runtime === "deno"
+          dev:
+            answers.runtime === "deno"
               ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
               : "bun run watcher.mjs",
+        };
+
+        if (answers.answers !== "deno") {
+          packageJson.dependencies = {
+            ...packageJson.dependencies,
+            vixeny: "latest",
+          };
+          packageJson.devDependencies = {
+            ...packageJson.devDependencies,
+            chokidar: "^3.6.0",
+            "bun-types": "^1.0.2",
           };
 
-          if (answers.answers !== "deno") {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              "vixeny": "latest",
-            };
-            packageJson.devDependencies = {
-              ...packageJson.devDependencies,
-              "chokidar": "^3.6.0",
-              "bun-types": "^1.0.2",
-            };
+          // injecting dependecies
+          packageJson.dependencies = toReduceDep(
+            answers,
+            packageJson.dependencies,
+            injectPlugins
+          );
+          packageJson.main = "main.ts";
 
-            // injecting dependecies
-            packageJson.dependencies = toReduceDep(
-              answers,
-              packageJson.dependencies,
-              injectPlugins,
-            );
-            packageJson.main = "main.ts";
+          fs.writeFile(
+            packageJsonPath,
+            JSON.stringify(packageJson, null, 2),
+            "utf8",
+            (err) => {
+              if (err) {
+                return console.error(`Failed to write package.json: ${err}`);
+              }
+            }
+          );
 
-            fs.writeFile(
-              packageJsonPath,
-              JSON.stringify(packageJson, null, 2),
-              "utf8",
-              (err) => {
-                if (err) {
-                  return console.error(`Failed to write package.json: ${err}`);
-                }
-              },
-            );
-
-            copyTemplateFiles("onlyBackend/" + answers.runtime, projectPath);
-            answers?.plugins.forEach(
-              (plugin) =>
-                copyTemplateFiles("plugins/" + plugin + "/", projectPath),
-            );
-          }
-        });
+          copyTemplateFiles("onlyBackend/" + answers.runtime, projectPath);
+          answers?.plugins.forEach((plugin) =>
+            copyTemplateFiles("plugins/" + plugin + "/", projectPath)
+          );
+        }
       });
+    });
 
-      goodByeMessage(
-        answers.runtime,
-        currPath,
-        projectName,
-      );
-    },
-  );
+    goodByeMessage(answers.runtime, currPath, projectName);
+  });
 };
 
 const fronted = async () => {
@@ -172,12 +172,14 @@ const fronted = async () => {
         let packageJson = JSON.parse(data);
         packageJson.scripts = {
           ...packageJson.scripts,
-          start: answers.runtime === "deno"
-            ? "deno run -A --unstable-ffi main.ts"
-            : "bun run main.ts",
-          dev: answers.runtime === "deno"
-            ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-            : "bun run watcher.mjs",
+          start:
+            answers.runtime === "deno"
+              ? "deno run -A --unstable-ffi main.ts"
+              : "bun run main.ts",
+          dev:
+            answers.runtime === "deno"
+              ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
+              : "bun run watcher.mjs",
         };
 
         packageJson.devDependencies = {
@@ -188,9 +190,9 @@ const fronted = async () => {
         if (answers.answers !== "deno") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
-            "vixeny": "latest",
+            vixeny: "latest",
             "vixeny-perspective": "latest",
-            "esbuild": "^0.20.1",
+            esbuild: "^0.20.1",
           };
 
           packageJson.dependencies = toReduceDep(
@@ -199,7 +201,7 @@ const fronted = async () => {
             {
               ...injectTemplates,
               ...injectPlugins,
-            },
+            }
           );
         }
 
@@ -213,20 +215,19 @@ const fronted = async () => {
             if (err) {
               return console.error(`Failed to write package.json: ${err}`);
             }
-          },
+          }
         );
         //Get the template
         const listOfTemplates = [
           answers.installationChoice,
           answers.style,
           "typescript",
-          ...answers?.template ?? [],
-        ]
-          .filter((x) => x !== "vanilla");
+          ...(answers?.template ?? []),
+        ].filter((x) => x !== "vanilla");
 
         copyTemplateFiles(
           "templates/" + answers.installationChoice,
-          projectPath,
+          projectPath
         );
         copyTemplateFiles("rt/" + answers.runtime, projectPath);
         copyTemplateFiles("css/" + answers.style, projectPath);
@@ -235,12 +236,12 @@ const fronted = async () => {
           copyTemplateFiles("pluginsPerspective/" + template + "/", projectPath)
         );
 
-        answers?.plugins.forEach(
-          (plugin) => copyTemplateFiles("plugins/" + plugin + "/", projectPath),
+        answers?.plugins.forEach((plugin) =>
+          copyTemplateFiles("plugins/" + plugin + "/", projectPath)
         );
 
         const importedList = listOfImports(
-          listOfTemplates.concat(answers?.plugins ?? []),
+          listOfTemplates.concat(answers?.plugins ?? [])
         );
         const listForRemplace = listOfTemplates.map((x) => x + "P");
 
@@ -250,10 +251,9 @@ const fronted = async () => {
           //adding plugins
           answers?.plugins && answers.plugins.length > 0
             ? `cyclePlugin: { ${answers.plugins.map(
-              x => "..." + x + 'P, '
-            )}},`
-            : ''
-          ,
+                (x) => "..." + x + "P, "
+              )}},`
+            : "",
           `
 const fileServer = plugins.fileServer({
   type: "fileServer",
@@ -263,14 +263,10 @@ const fileServer = plugins.fileServer({
   slashIs: "$main",
   mime: true,
   template: [${listForRemplace.toString()}]
-});`,
-        )
-       
-        goodByeMessage(
-          answers.runtime,
-          currPath,
-          projectName,
+});`
         );
+
+        goodByeMessage(answers.runtime, currPath, projectName);
       });
     });
   });
