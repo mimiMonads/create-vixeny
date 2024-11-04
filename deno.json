@@ -1,0 +1,10 @@
+{
+  "name": "@vixeny/create",
+  "version": "0.3.8",
+  "imports": {
+    "vixeny": "jsr:@vixeny/core@0.1.49"
+  },
+  "bin": {
+    "create-vixeny": "./bin/create-vixeny.mjs"
+  }
+}

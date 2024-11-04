@@ -14,7 +14,7 @@
     "deno"
   ],
   "bin": {
-    "create-vixeny": "./bin/create-vixeny.mjs"
+    "create-vixeny": "./bin/create-vixeny.ts"
   },
   "author": "mimi",
   "license": "ISC",
@@ -25,9 +25,13 @@
   "devDependencies": {
     "vixeny": "0.1.49",
     "vixeny-plugins": "0.1.0",
-    "vixeny-perspective": "0.1.48"
+    "vixeny-perspective": "0.1.48",
+    "@types/bun": "latest"
   },
   "dependencies": {
     "inquirer": "^9.2.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }

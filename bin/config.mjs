@@ -28,12 +28,6 @@ const repeatedQuestions = [
     choices: ["typebox"],
   },
   {
-    type: "list",
-    name: "runtime",
-    message: "Which runtime would you prefer?",
-    choices: ["bun", "deno"],
-  },
-  {
     type: "input",
     name: "projectName",
     message: 'Where to create the project? Enter directory name or ".":',
