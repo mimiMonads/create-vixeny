@@ -1,6 +1,12 @@
 import { pugStaticServerPlugin } from "vixeny-perspective";
-import * as pugModule from "pug";
+import { petitions, plugins } from "vixeny";
+import { compileFile } from "pug";
 
-export default pugStaticServerPlugin(pugModule.compileFile)({
-  preserveExtension: false,
+export default pugStaticServerPlugin({
+  compileFile,
+  plugins,
+  petitions,
+  option: {
+    preserveExtension: false,
+  },
 });

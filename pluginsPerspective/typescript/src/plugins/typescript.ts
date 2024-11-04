@@ -1,5 +1,9 @@
 import { typescriptStaticServer } from "vixeny-perspective";
+import { petitions, plugins } from "vixeny";
+import esbuild from "esbuild";
 
-import esm from "esbuild";
-
-export default typescriptStaticServer(esm)();
+export default typescriptStaticServer({
+  plugins,
+  esbuild,
+  petitions,
+});

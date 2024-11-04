@@ -1,13 +1,17 @@
-import * as Avj from "@feathersjs/schema";
 import * as TypeBox from "@sinclair/typebox";
-import * as Vixney from "vixeny";
+import { plugins } from "vixeny";
+import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { typeBox } from "vixeny-plugins";
 
 const {
   Type,
 } = TypeBox;
 
-const parser = typeBox.composedBox(Vixney)(Avj)(TypeBox);
+const parser = typeBox.composedBox({
+  plugins,
+  TypeCompiler,
+  TypeBox,
+});
 const bodyParser = parser({
   key: {
     scheme: {

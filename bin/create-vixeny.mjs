@@ -36,9 +36,10 @@ console.log(
 );
 terminalSpace();
 
-const packageManager = ( await checkPackageManager("npm")  ?? await checkPackageManager("bun")) ??
-  (await checkPackageManager("deno") ?? await checkPackageManager("yarn") ??
-  await checkPackageManager("pnpm"));
+const packageManager =
+  (await checkPackageManager("npm") ?? await checkPackageManager("bun")) ??
+    (await checkPackageManager("deno") ?? await checkPackageManager("yarn") ??
+      await checkPackageManager("pnpm"));
 
 inquirer
   .prompt(questionForMain)
@@ -187,8 +188,8 @@ const fronted = async () => {
         if (answers.answers !== "deno") {
           packageJson.dependencies = {
             ...packageJson.dependencies,
-            vixeny: "latest",
-            "vixeny-perspective": "latest",
+            vixeny: "^0.1.49",
+            "vixeny-perspective": "^0.1.44",
             esbuild: "^0.20.1",
           };
 

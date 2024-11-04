@@ -1,6 +1,12 @@
 import { ejsStaticServerPlugin } from "vixeny-perspective";
-import * as ejsModule from "ejs";
+import { renderFile } from "ejs";
+import { petitions, plugins } from "vixeny";
 
-export default ejsStaticServerPlugin(ejsModule.renderFile)({
-  preserveExtension: false,
+export default ejsStaticServerPlugin({
+  renderFile,
+  plugins,
+  petitions,
+  option: {
+    preserveExtension: false,
+  },
 });

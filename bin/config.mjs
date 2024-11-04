@@ -67,7 +67,6 @@ export const questionsForTemplate = [
     name: "installationChoice",
     message: " Which HTML template would you like?",
     choices: [
-      // "vanilla",
       "pug",
       "ejs",
       "jsx",
