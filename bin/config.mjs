@@ -17,7 +17,7 @@ export const template = [
   { name: "remark", value: "remark" },
 ];
 
-export const __filename = ""
+export let __filename = ""
 
 try {
 
