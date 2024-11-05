@@ -5,7 +5,6 @@ import path from "node:path";
 import process from "node:process";
 import { runtime } from "vixeny";
 import {
-  checkPackageManager,
   goodByeMessage,
   listOfImports,
   terminalSpace,
@@ -53,8 +52,10 @@ const packageManager = currentRuntime === "Bun"
 
 const flags = runtime.arguments();
 
+type Answers = { projectName: any; answers: string; installationChoice: string; style: string; template: any; plugins: string[]; }
+
 const onlyBackend = async () => {
-  inquirer.prompt(questionsForBackendTemplate).then((answers) => {
+  inquirer.prompt(questionsForBackendTemplate).then((answers : Answers) => {
     // Your previous answers handling here
     if (!packageManager) {
       console.error("Can't find Bun or Deno package manager.");
@@ -139,12 +140,12 @@ const onlyBackend = async () => {
       });
     });
 
-    goodByeMessage(currentRuntime, currPath, projectName);
+    goodByeMessage(currentRuntime.toString(), currPath, projectName);
   });
 };
 
 const fronted = async (ob?: Promise<any>) => {
-  (ob ?? inquirer.prompt(questionsForTemplate)).then((answers) => {
+  (ob ?? inquirer.prompt(questionsForTemplate)).then((answers: Answers) => {
     // Your previous answers handling here
     let projectName = answers.projectName;
 
@@ -163,7 +164,6 @@ const fronted = async (ob?: Promise<any>) => {
       fs.mkdirSync(projectPath);
     }
 
-    console.log("Project initialized successfully.");
     // Initialize npm project
     exec(`${packageManager} init`, {
       cwd: projectPath,
@@ -176,100 +176,103 @@ const fronted = async (ob?: Promise<any>) => {
         console.error(`Failed to initialize the project: ${error}`);
         return;
       }
+    });
 
-      if (currentRuntime !== "Deno") {
-        const packageJsonPath = path.join(projectPath, "package.json");
-        fs.readFile(packageJsonPath, "utf8", (err, data) => {
-          if (err) return console.error(`Failed to read package.json: ${err}`);
+    if (currentRuntime !== "Deno") {
+      const packageJsonPath = path.join(projectPath, "package.json");
+      fs.readFile(packageJsonPath, "utf8", (err, data) => {
+        if (err) return console.error(`Failed to read package.json: ${err}`);
 
-          let packageJson = JSON.parse(data);
-          packageJson.scripts = {
-            ...packageJson.scripts,
-            start:
-              // "deno run -A --unstable-ffi main.ts"
-              "bun run main.ts",
-            dev:
-              // "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-              "bun run watcher.mjs",
-          };
+        let packageJson = JSON.parse(data);
+        packageJson.scripts = {
+          ...packageJson.scripts,
+          start:
+            // "deno run -A --unstable-ffi main.ts"
+            "bun run main.ts",
+          dev:
+            // "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
+            "bun run watcher.mjs",
+        };
 
-          packageJson.devDependencies = {
+        packageJson.devDependencies = {
+          ...packageJson.dependencies,
+          "bun-types": "^1.0.2",
+        };
+
+        if (answers.answers !== "Deno") {
+          packageJson.dependencies = {
             ...packageJson.dependencies,
-            "bun-types": "^1.0.2",
+            vixeny: "^0.1.49",
+            "vixeny-perspective": "^0.1.44",
+            esbuild: "^0.20.1",
           };
 
-          if (answers.answers !== "Deno") {
-            packageJson.dependencies = {
-              ...packageJson.dependencies,
-              vixeny: "^0.1.49",
-              "vixeny-perspective": "^0.1.44",
-              esbuild: "^0.20.1",
-            };
-
-            packageJson.dependencies = toReduceDep(
-              answers,
-              packageJson.dependencies,
-              {
-                ...injectTemplates,
-                ...injectPlugins,
-              },
-            );
-          }
-
-          packageJson.main = "main.ts";
-
-          fs.writeFile(
-            packageJsonPath,
-            JSON.stringify(packageJson, null, 2),
-            "utf8",
-            (err) => {
-              if (err) {
-                return console.error(`Failed to write package.json: ${err}`);
-              }
+          packageJson.dependencies = toReduceDep(
+            answers,
+            packageJson.dependencies,
+            {
+              ...injectTemplates,
+              ...injectPlugins,
             },
           );
-        });
-      }
-      //Get the template
-      const listOfTemplates = [
+        }
+
+        packageJson.main = "main.ts";
+
+        fs.writeFile(
+          packageJsonPath,
+          JSON.stringify(packageJson, null, 2),
+          "utf8",
+          (err) => {
+            if (err) {
+              return console.error(`Failed to write package.json: ${err}`);
+            }
+          },
+        );
+      });
+    }
+    //Get the template
+    const listOfTemplates =[ ...new Set(
+      [
         answers.installationChoice,
         answers.style,
         "typescript",
         ...(answers?.template ?? []),
-      ].filter((x) => x !== "vanilla");
+      ].filter((x) => x !== "vanilla")
+    ) ];
 
-      copyTemplateFiles(
-        "templates/" + answers.installationChoice,
-        projectPath,
-      );
-      copyTemplateFiles("rt/" + currentRuntime, projectPath);
-      copyTemplateFiles("css/" + answers.style, projectPath);
-      copyTemplateFiles("src/", projectPath);
-      listOfTemplates.forEach((template) =>
-        copyTemplateFiles("pluginsPerspective/" + template + "/", projectPath)
-      );
+    copyTemplateFiles(
+      "templates/" + answers.installationChoice,
+      projectPath,
+    );
+    copyTemplateFiles("rt/" + currentRuntime.toLowerCase(), projectPath);
+    copyTemplateFiles("css/" + answers.style, projectPath);
+    copyTemplateFiles("src/", projectPath);
+    listOfTemplates.forEach((template) =>
+      copyTemplateFiles("pluginsPerspective/" + template + "/", projectPath)
+    );
 
-      answers?.plugins.forEach((plugin) =>
-        copyTemplateFiles("plugins/" + plugin + "/", projectPath)
-      );
+    answers?.plugins.forEach((plugin: string) =>
+      copyTemplateFiles("plugins/" + plugin + "/", projectPath)
+    );
 
-      const importedList = listOfImports(
-        listOfTemplates.concat(answers?.plugins ?? []),
-      );
-      const listForRemplace = listOfTemplates.map((x) => x + "P");
+    const importedList = listOfImports(
+      listOfTemplates.concat(answers?.plugins ?? []),
+    );
+    const listForRemplace = listOfTemplates.map((x) => x + "P");
 
-      replaceOptionsAndImports(
-        projectPath,
-        importedList,
-        //adding plugins
-        answers?.plugins && answers.plugins.length > 0
-          ? `cyclePlugin: { ${
-            answers.plugins.map(
-              (x) => "..." + x + "P, ",
-            )
-          }},`
-          : "",
-        `
+    replaceOptionsAndImports(
+      projectPath,
+      importedList,
+      //adding plugins
+      answers?.plugins && answers.plugins.length > 0
+        ? `cyclePlugin: { ${
+          answers.plugins.map(
+            (x: string) => "..." + x + "P, ",
+          )
+        }},`
+        : "",
+      `
 const fileServer = plugins.fileServer({
   type: "fileServer",
   name: "/",
@@ -279,17 +282,16 @@ const fileServer = plugins.fileServer({
   mime: true,
   template: [${listForRemplace.toString()}]
 });`,
-      );
+    );
 
-      goodByeMessage(currentRuntime, currPath, projectName);
-    });
+    goodByeMessage(currentRuntime.toString(), currPath, projectName);
   });
 };
 
 if (!("test" in flags) && !(flags.test)) {
   inquirer
     .prompt(questionForMain)
-    .then((answers) =>
+    .then((answers: { main: string; }) =>
       answers.main === "with fronted" ? fronted() : onlyBackend()
     );
 } else {
@@ -306,6 +308,7 @@ if (!("test" in flags) && !(flags.test)) {
             projectName: "dest",
             installationChoice: "tsx",
             style: "vanilla",
+            plugins: []
           }),
       ),
     );
