@@ -17,7 +17,25 @@ export const template = [
   { name: "remark", value: "remark" },
 ];
 
-export const __filename = fileURLToPath(import.meta.url);
+export const __filename = ""
+
+try {
+
+  __filename = fileURLToPath(import.meta.url);
+
+}catch(error) {
+
+  try {
+    __filename = fileURLToPath(deno.cwd())
+  } catch (secondError) {
+    console.warn(error)
+    // Kills the proccess
+    throw secondError
+  }
+
+}
+
+
 export const __dirname = path.dirname(__filename);
 
 const repeatedQuestions = [
