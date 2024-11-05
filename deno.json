@@ -1,10 +1,11 @@
 {
   "name": "@vixeny/create",
   "version": "0.3.8",
+  "exports": "./bin/create-vixeny.ts",
   "imports": {
     "vixeny": "jsr:@vixeny/core@0.1.49"
   },
   "bin": {
-    "create-vixeny": "./bin/create-vixeny.mjs"
+    "create-vixeny": "./bin/create-vixeny.ts"
   }
 }
