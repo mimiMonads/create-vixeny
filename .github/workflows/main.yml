@@ -1,0 +1,14 @@
+name: Deno
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - run: deno add jsr:@vixeny/core
+      - run: deno run -A  ./bin/create-vixeny.ts --test --frontend
