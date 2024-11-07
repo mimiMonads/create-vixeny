@@ -10,7 +10,7 @@ export default tsxStaticServer({
   esbuild,
   plugins,
   petitions,
-  opt: {
+  options: {
     preserveExtension: false,
   },
 });

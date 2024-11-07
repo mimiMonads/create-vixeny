@@ -4,7 +4,7 @@ import { colors } from "./config.mjs";
 export const terminalSpace = () => console.log("");
 
 export const goodByeMessage = (runtime, currPath, projectName) => {
-  runtime = runtime.toLowerCase()
+  runtime = runtime.toLowerCase();
   terminalSpace();
   console.log(`${colors.B}# All set! Here's what to do next:`);
   terminalSpace();

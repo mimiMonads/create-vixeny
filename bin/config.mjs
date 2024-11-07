@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+import { runtime } from "vixeny";
 import path from "node:path";
 export const colors = {
   A: `\x1b[31m`,
@@ -7,6 +8,9 @@ export const colors = {
   D: `\x1b[34m`,
   R: `\x1b[0m`,
 };
+
+const currentName = runtime.name();
+
 export const template = [
   { name: "tsx", value: "tsx" },
   { name: "jsx", value: "jsx" },
@@ -15,26 +19,29 @@ export const template = [
   { name: "postcss", value: "postcss" },
   { name: "sass", value: "sass" },
   { name: "remark", value: "remark" },
-];
+]
+  // Have tp fix tsx for Deno
+  .filter(
+    (x) => (currentName !== "Deno" || x.value !== "tsx"),
+  ).map(
+    (x) => void console.log(x) ?? x,
+  );
 
-export let __filename = ""
+export let __filename = "";
 
 try {
-
-  __filename = fileURLToPath(import.meta.url);
-
-}catch(error) {
-
-  try {
-    __filename = fileURLToPath(deno.cwd())
-  } catch (secondError) {
-    console.warn(error)
-    // Kills the proccess
-    throw secondError
+  const url = new URL(import.meta.url);
+  if (url.protocol === "file:") {
+    __filename = fileURLToPath(url);
+  } else {
+    __filename = Deno.cwd();
   }
-
+} catch (error) {
+  console.log(import.meta.url);
+  console.log(Deno.cwd());
+  console.error("Error determining __filename:", error);
+  throw error;
 }
-
 
 export const __dirname = path.dirname(__filename);
 
@@ -83,7 +90,11 @@ export const questionsForTemplate = [
       "ejs",
       "jsx",
       "tsx",
-    ],
+    ]
+      .filter(
+        // Fix later for Deno
+        (x) => currentName !== "Deno" || x !== "tsx",
+      ),
   },
   {
     type: "list",

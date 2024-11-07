@@ -9,7 +9,7 @@ export default jsxStaticServer({
   Dom,
   petitions,
   plugins,
-  opt: {
+  options: {
     root: process.cwd(),
   },
 });

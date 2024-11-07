@@ -56,6 +56,7 @@ export const injectTemplates = {
         "remark-parse": "^11.0.0",
         "remark-rehype": "^11.1.0",
         "unified": "^11.0.4",
+        "rehype-document": "7.0.0",
       }
       : dependencies,
 };

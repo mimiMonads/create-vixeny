@@ -1,6 +1,6 @@
 {
   "name": "@vixeny/create",
-  "version": "0.3.80",
+  "version": "0.3.85",
   "exports": "./bin/create-vixeny.ts",
   "imports": {
     "vixeny": "jsr:@vixeny/core@0.1.49"

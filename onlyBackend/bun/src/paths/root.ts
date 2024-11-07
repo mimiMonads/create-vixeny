@@ -2,11 +2,11 @@ import { wrap } from "vixeny";
 import { globalOptions } from "../globalOptions.ts";
 
 export default wrap(globalOptions)()
-  .petitionWithoutCTX({
+  .get({
     path: "/",
-    r: () => new Response("Hi"),
+    f: () => new Response("Hi"),
   })
-  .stdPetition({
+  .get({
     path: "/id/:id",
     headings: {
       headers: new Headers([[
@@ -23,9 +23,8 @@ export default wrap(globalOptions)()
     },
     f: (f) => f.param + " " + f.query,
   })
-  .stdPetition({
+  .post({
     path: "/json",
-    method: "POST",
     headings: {
       headers: new Headers([[
         "content-type",

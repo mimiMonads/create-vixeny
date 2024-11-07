@@ -6,7 +6,7 @@ export default ejsStaticServerPlugin({
   renderFile,
   plugins,
   petitions,
-  option: {
+  options: {
     preserveExtension: false,
   },
 });

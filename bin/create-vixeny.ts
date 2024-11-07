@@ -4,11 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { runtime } from "vixeny";
-import {
-  goodByeMessage,
-  listOfImports,
-  terminalSpace,
-} from "./utils.mjs";
+import { goodByeMessage, listOfImports, terminalSpace } from "./utils.mjs";
 import {
   __dirname,
   __filename,
@@ -52,10 +48,17 @@ const packageManager = currentRuntime === "Bun"
 
 const flags = runtime.arguments();
 
-type Answers = { projectName: any; answers: string; installationChoice: string; style: string; template: any; plugins: string[]; }
+type Answers = {
+  projectName: any;
+  answers: string;
+  installationChoice: string;
+  style: string;
+  template: any;
+  plugins: string[];
+};
 
 const onlyBackend = async () => {
-  inquirer.prompt(questionsForBackendTemplate).then((answers : Answers) => {
+  inquirer.prompt(questionsForBackendTemplate).then((answers: Answers) => {
     // Your previous answers handling here
     if (!packageManager) {
       console.error("Can't find Bun or Deno package manager.");
@@ -78,67 +81,65 @@ const onlyBackend = async () => {
       fs.mkdirSync(projectPath);
     }
 
-    // Initialize npm project
-    exec(`${packageManager} init`, { cwd: projectPath }, (error) => {
-      if (error) {
-        console.error(`Failed to initialize the project: ${error}`);
-        return;
-      }
+    let packageJson = {
+      name: projectName,
+      description: "A project made with love <3",
+      main: "main.ts",
+      keywords: [
+        "vixeny",
+        "functional",
+        "bun",
+      ],
+      scripts: {},
+      devDependencies: {},
+      dependencies: {},
+      peerDependencies: {
+        "typescript": "^5.0.0",
+      },
+    };
 
-      console.log("Project initialized successfully.");
+    const packageJsonPath = path.join(projectPath, "package.json");
 
-      const packageJsonPath = path.join(projectPath, "package.json");
-      fs.readFile(packageJsonPath, "utf8", (err, data) => {
-        if (err) return console.error(`Failed to read package.json: ${err}`);
+    packageJson.scripts = {
+      ...packageJson.scripts,
+      start: "bun run main.ts",
+      dev: "bun run watcher.mjs",
+    };
 
-        const packageJson = JSON.parse(data);
-        packageJson.scripts = {
-          ...packageJson.scripts,
-          start: currentRuntime === "Deno"
-            ? "deno run -A --unstable-ffi main.ts"
-            : "bun run main.ts",
-          dev: currentRuntime === "Deno"
-            ? "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-            : "bun run watcher.mjs",
-        };
+    if (answers.answers !== "Deno") {
+      packageJson.dependencies = {
+        ...packageJson.dependencies,
+        vixeny: "0.1.49",
+      };
+      packageJson.devDependencies = {
+        ...packageJson.devDependencies,
+        chokidar: "^3.6.0",
+        "bun-types": "^1.0.2",
+      };
 
-        if (answers.answers !== "Deno") {
-          packageJson.dependencies = {
-            ...packageJson.dependencies,
-            vixeny: "0.1.49",
-          };
-          packageJson.devDependencies = {
-            ...packageJson.devDependencies,
-            chokidar: "^3.6.0",
-            "bun-types": "^1.0.2",
-          };
+      // injecting dependecies
+      packageJson.dependencies = toReduceDep(
+        answers,
+        packageJson.dependencies,
+        injectPlugins,
+      );
 
-          // injecting dependecies
-          packageJson.dependencies = toReduceDep(
-            answers,
-            packageJson.dependencies,
-            injectPlugins,
-          );
-          packageJson.main = "main.ts";
+      fs.writeFile(
+        packageJsonPath,
+        JSON.stringify(packageJson, null, 2),
+        "utf8",
+        (err) => {
+          if (err) {
+            return console.error(`Failed to write package.json: ${err}`);
+          }
+        },
+      );
+    }
 
-          fs.writeFile(
-            packageJsonPath,
-            JSON.stringify(packageJson, null, 2),
-            "utf8",
-            (err) => {
-              if (err) {
-                return console.error(`Failed to write package.json: ${err}`);
-              }
-            },
-          );
-        }
-
-        copyTemplateFiles("onlyBackend/" + currentRuntime, projectPath);
-        answers?.plugins.forEach((plugin) =>
-          copyTemplateFiles("plugins/" + plugin + "/", projectPath)
-        );
-      });
-    });
+    copyTemplateFiles("onlyBackend/" + currentRuntime, projectPath);
+    answers?.plugins.forEach((plugin) =>
+      copyTemplateFiles("plugins/" + plugin + "/", projectPath)
+    );
 
     goodByeMessage(currentRuntime.toString(), currPath, projectName);
   });
@@ -164,82 +165,79 @@ const fronted = async (ob?: Promise<any>) => {
       fs.mkdirSync(projectPath);
     }
 
-    // Initialize npm project
-    exec(`${packageManager} init`, {
-      cwd: projectPath,
-      //@ts-ignore // not recommended but uwu
-      uid: process.getuid(),
-      //@ts-ignore
-      gid: process.getgid(),
-    }, (error) => {
-      if (error) {
-        console.error(`Failed to initialize the project: ${error}`);
-        return;
-      }
-    });
-
     if (currentRuntime !== "Deno") {
-      const packageJsonPath = path.join(projectPath, "package.json");
-      fs.readFile(packageJsonPath, "utf8", (err, data) => {
-        if (err) return console.error(`Failed to read package.json: ${err}`);
+      let packageJson = {
+        name: projectName,
+        description: "A project made with love <3",
+        main: "main.ts",
+        keywords: [
+          "vixeny",
+          "functional",
+          "bun",
+        ],
+        scripts: {},
+        devDependencies: {},
+        dependencies: {},
+        peerDependencies: {
+          "typescript": "^5.0.0",
+        },
+      };
 
-        let packageJson = JSON.parse(data);
-        packageJson.scripts = {
-          ...packageJson.scripts,
-          start:
-            // "deno run -A --unstable-ffi main.ts"
-            "bun run main.ts",
-          dev:
-            // "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
-            "bun run watcher.mjs",
-        };
+      packageJson.scripts = {
+        ...packageJson.scripts,
+        start:
+          // "deno run -A --unstable-ffi main.ts"
+          "bun run main.ts",
+        dev:
+          // "deno run -A  --unstable-ffi watcher.mjs --liveReloading "
+          "bun run watcher.mjs",
+      };
 
-        packageJson.devDependencies = {
+      packageJson.devDependencies = {
+        ...packageJson.dependencies,
+        "bun-types": "^1.0.2",
+      };
+
+      if (answers.answers !== "Deno") {
+        packageJson.dependencies = {
           ...packageJson.dependencies,
-          "bun-types": "^1.0.2",
+          vixeny: "^0.1.49",
+          "vixeny-perspective": "^0.1.44",
+          esbuild: "^0.20.1",
         };
 
-        if (answers.answers !== "Deno") {
-          packageJson.dependencies = {
-            ...packageJson.dependencies,
-            vixeny: "^0.1.49",
-            "vixeny-perspective": "^0.1.44",
-            esbuild: "^0.20.1",
-          };
-
-          packageJson.dependencies = toReduceDep(
-            answers,
-            packageJson.dependencies,
-            {
-              ...injectTemplates,
-              ...injectPlugins,
-            },
-          );
-        }
-
-        packageJson.main = "main.ts";
-
-        fs.writeFile(
-          packageJsonPath,
-          JSON.stringify(packageJson, null, 2),
-          "utf8",
-          (err) => {
-            if (err) {
-              return console.error(`Failed to write package.json: ${err}`);
-            }
+        packageJson.dependencies = toReduceDep(
+          answers,
+          packageJson.dependencies,
+          {
+            ...injectTemplates,
+            ...injectPlugins,
           },
         );
-      });
+      }
+
+      fs.writeFile(
+        path.join(projectPath, "package.json"),
+        JSON.stringify(packageJson, null, 2),
+        "utf8",
+        (err) => {
+          if (err) {
+            return console.error(`Failed to write package.json: ${err}`);
+          }
+        },
+      );
     }
     //Get the template
-    const listOfTemplates =[ ...new Set(
-      [
-        answers.installationChoice,
-        answers.style,
-        "typescript",
-        ...(answers?.template ?? []),
-      ].filter((x) => x !== "vanilla")
-    ) ];
+    const listOfTemplates = [
+      ...new Set(
+        [
+          answers.installationChoice,
+          answers.style,
+          "typescript",
+          ...(answers?.template ?? []),
+        ].filter((x) => x !== "vanilla"),
+      ),
+    ];
 
     copyTemplateFiles(
       "templates/" + answers.installationChoice,
@@ -291,7 +289,7 @@ const fileServer = plugins.fileServer({
 if (!("test" in flags) && !(flags.test)) {
   inquirer
     .prompt(questionForMain)
-    .then((answers: { main: string; }) =>
+    .then((answers: { main: string }) =>
       answers.main === "with fronted" ? fronted() : onlyBackend()
     );
 } else {
@@ -308,7 +306,7 @@ if (!("test" in flags) && !(flags.test)) {
             projectName: "dest",
             installationChoice: "tsx",
             style: "vanilla",
-            plugins: []
+            plugins: [],
           }),
       ),
     );

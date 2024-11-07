@@ -1,6 +1,6 @@
 {
   "name": "@vixeny/create-vixeny",
-  "version": "0.3.9",
+  "version": "0.3.92",
   "description": "templates for Vixeny",
   "main": "main.ts",
   "repository": {
@@ -25,7 +25,7 @@
   "devDependencies": {
     "vixeny": "0.1.49",
     "vixeny-plugins": "0.1.0",
-    "vixeny-perspective": "0.1.48",
+    "vixeny-perspective": "0.1.50",
     "@types/bun": "latest"
   },
   "dependencies": {
