@@ -1,6 +1,6 @@
 {
   "name": "@vixeny/create",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "exports": "./bin/create-vixeny.mjs",
   "imports": {
     "vixeny": "jsr:@vixeny/core@0.1.49"

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
-import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -40,7 +39,24 @@ const packageManager = currentRuntime === "Bun"
   // @ts-ignore
   : Deno.execPath();
 
-const flags = runtime.arguments();
+
+const argumentsUsed = () =>
+    //@ts-ignore
+    (typeof Deno !== "undefined" ? Deno.args : process.argv.slice(2))
+      .map((arg) =>
+        arg.startsWith("--")
+          ? arg.slice(2).split("=")
+          : [arg, true]
+      )
+      .reduce(
+        (acc, [key, value]) => ({
+          ...acc,
+          [key]: value === undefined ? true : value,
+        }),
+        {},
+      );
+
+const flags = argumentsUsed();
 
 const onlyBackend = async () => {
   inquirer.prompt(questionsForBackendTemplate).then((answers) => {

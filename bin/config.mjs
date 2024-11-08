@@ -1,7 +1,6 @@
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { cwd } from "node:process";
-import { runtime } from "vixeny";
 export const colors = {
   A: `\x1b[31m`,
   B: `\x1b[32m`,
@@ -10,7 +9,15 @@ export const colors = {
   R: `\x1b[0m`,
 };
 
-export const currentRuntime = runtime.name() === "Bun" ? "Bun" : "Deno";
+const name =  () =>
+  //@ts-ignore
+  typeof Bun !== "undefined"
+    ? "Bun"
+    //@ts-ignore
+    : typeof Bun !== "undefined"
+    ? "Deno"
+    : "Node";
+export const currentRuntime = name() === "Bun" ? "Bun" : "Deno";
 
 export const template = [
   { name: "tsx", value: "tsx" },
