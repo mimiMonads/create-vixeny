@@ -10,10 +10,7 @@ export const colors = {
   R: `\x1b[0m`,
 };
 
-export const currentRuntime = runtime.name() === "Bun" 
-  ? "Bun"
-  : "Deno"
-
+export const currentRuntime = runtime.name() === "Bun" ? "Bun" : "Deno";
 
 export const template = [
   { name: "tsx", value: "tsx" },

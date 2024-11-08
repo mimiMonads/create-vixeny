@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import inquirer from "inquirer";
 import { exec } from "node:child_process";
 import fs from "node:fs";
@@ -8,16 +9,14 @@ import { goodByeMessage, listOfImports, terminalSpace } from "./utils.mjs";
 import {
   __dirname,
   __filename,
+  currentRuntime,
   questionForMain,
   questionsForBackendTemplate,
   questionsForTemplate,
   template,
-  currentRuntime
 } from "./config.mjs";
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
-
-
 
 terminalSpace();
 console.log(

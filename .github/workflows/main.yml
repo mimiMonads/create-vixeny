@@ -11,4 +11,4 @@ jobs:
         with:
           deno-version: v2.x
       - run: deno add jsr:@vixeny/core
-      - run: deno run -A  ./bin/create-vixeny.ts --test --frontend
+      - run: deno run -A  ./bin/create-vixeny.mjs --test --frontend
