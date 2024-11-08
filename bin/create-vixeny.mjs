@@ -3,7 +3,6 @@ import inquirer from "inquirer";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { runtime } from "vixeny";
 import { goodByeMessage, listOfImports, terminalSpace } from "./utils.mjs";
 import {
   __dirname,
@@ -34,27 +33,17 @@ console.log(
 );
 terminalSpace();
 
-const packageManager = currentRuntime === "Bun"
-  ? "bun"
-  // @ts-ignore
-  : Deno.execPath();
-
-
 const argumentsUsed = () =>
-    //@ts-ignore
-    (typeof Deno !== "undefined" ? Deno.args : process.argv.slice(2))
-      .map((arg) =>
-        arg.startsWith("--")
-          ? arg.slice(2).split("=")
-          : [arg, true]
-      )
-      .reduce(
-        (acc, [key, value]) => ({
-          ...acc,
-          [key]: value === undefined ? true : value,
-        }),
-        {},
-      );
+  //@ts-ignore
+  (typeof Deno !== "undefined" ? Deno.args : process.argv.slice(2))
+    .map((arg) => arg.startsWith("--") ? arg.slice(2).split("=") : [arg, true])
+    .reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: value === undefined ? true : value,
+      }),
+      {},
+    );
 
 const flags = argumentsUsed();
 

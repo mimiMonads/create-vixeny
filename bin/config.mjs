@@ -9,7 +9,7 @@ export const colors = {
   R: `\x1b[0m`,
 };
 
-const name =  () =>
+const name = () =>
   //@ts-ignore
   typeof Bun !== "undefined"
     ? "Bun"
