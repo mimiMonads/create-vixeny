@@ -12,17 +12,12 @@ import {
   questionsForBackendTemplate,
   questionsForTemplate,
   template,
+  currentRuntime
 } from "./config.mjs";
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
-// Checks if you are running deno or bun
 
-const currentRuntime = runtime.name();
-
-if (!(currentRuntime === "Deno") && !(currentRuntime === "Bun")) {
-  throw new Error(currentRuntime + " is not supported.");
-}
 
 terminalSpace();
 console.log(
@@ -48,17 +43,8 @@ const packageManager = currentRuntime === "Bun"
 
 const flags = runtime.arguments();
 
-type Answers = {
-  projectName: any;
-  answers: string;
-  installationChoice: string;
-  style: string;
-  template: any;
-  plugins: string[];
-};
-
 const onlyBackend = async () => {
-  inquirer.prompt(questionsForBackendTemplate).then((answers: Answers) => {
+  inquirer.prompt(questionsForBackendTemplate).then((answers) => {
     // Your previous answers handling here
     if (!packageManager) {
       console.error("Can't find Bun or Deno package manager.");
@@ -145,8 +131,8 @@ const onlyBackend = async () => {
   });
 };
 
-const fronted = async (ob?: Promise<any>) => {
-  (ob ?? inquirer.prompt(questionsForTemplate)).then((answers: Answers) => {
+const fronted = async (ob) => {
+  (ob ?? inquirer.prompt(questionsForTemplate)).then((answers) => {
     // Your previous answers handling here
     let projectName = answers.projectName;
 
@@ -250,7 +236,7 @@ const fronted = async (ob?: Promise<any>) => {
       copyTemplateFiles("pluginsPerspective/" + template + "/", projectPath)
     );
 
-    answers?.plugins.forEach((plugin: string) =>
+    answers?.plugins.forEach((plugin) =>
       copyTemplateFiles("plugins/" + plugin + "/", projectPath)
     );
 
@@ -266,7 +252,7 @@ const fronted = async (ob?: Promise<any>) => {
       answers?.plugins && answers.plugins.length > 0
         ? `cyclePlugin: { ${
           answers.plugins.map(
-            (x: string) => "..." + x + "P, ",
+            (x) => "..." + x + "P, ",
           )
         }},`
         : "",
@@ -289,7 +275,7 @@ const fileServer = plugins.fileServer({
 if (!("test" in flags) && !(flags.test)) {
   inquirer
     .prompt(questionForMain)
-    .then((answers: { main: string }) =>
+    .then((answers) =>
       answers.main === "with fronted" ? fronted() : onlyBackend()
     );
 } else {

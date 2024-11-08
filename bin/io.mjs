@@ -31,6 +31,10 @@ export function copyTemplateFiles(templateName, projectPath) {
   try {
     copyRecursively(templatePath, projectPath);
   } catch (error) {
+    console.log("dir name :" + __dirname);
+    console.log("file name :" + __filename);
+    console.log("templatePath :" + templatePath);
+    console.log("projectPath :" + projectPath);
     console.error("Error copying template files:", error);
   }
 }
@@ -49,6 +53,10 @@ export function replaceOptionsAndImports(
     "utf8",
     (readError, data) => {
       if (readError) {
+        console.log(
+          " To the file : " +
+            path.join(__dirname, "..", "var/globalOptions.ts"),
+        );
         console.error(`Error reading file: ${readError}`);
         return;
       }

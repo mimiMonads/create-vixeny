@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url";
-import { runtime } from "vixeny";
 import path from "node:path";
+import { cwd } from "node:process";
+import { runtime } from "vixeny";
 export const colors = {
   A: `\x1b[31m`,
   B: `\x1b[32m`,
@@ -9,7 +10,10 @@ export const colors = {
   R: `\x1b[0m`,
 };
 
-const currentName = runtime.name();
+export const currentRuntime = runtime.name() === "Bun" 
+  ? "Bun"
+  : "Deno"
+
 
 export const template = [
   { name: "tsx", value: "tsx" },
@@ -22,23 +26,16 @@ export const template = [
 ]
   // Have tp fix tsx for Deno
   .filter(
-    (x) => (currentName !== "Deno" || x.value !== "tsx"),
-  ).map(
-    (x) => void console.log(x) ?? x,
+    (x) => (currentRuntime !== "Deno" || x.value !== "tsx"),
   );
 
 export let __filename = "";
 
 try {
-  const url = new URL(import.meta.url);
-  if (url.protocol === "file:") {
-    __filename = fileURLToPath(url);
-  } else {
-    __filename = Deno.cwd();
-  }
+  __filename = fileURLToPath(import.meta.url);
 } catch (error) {
-  console.log(import.meta.url);
-  console.log(Deno.cwd());
+  console.log(" import.meta.url is: " + import.meta.url);
+  console.log(" cwd is : " + cwd());
   console.error("Error determining __filename:", error);
   throw error;
 }
@@ -93,7 +90,7 @@ export const questionsForTemplate = [
     ]
       .filter(
         // Fix later for Deno
-        (x) => currentName !== "Deno" || x !== "tsx",
+        (x) => currentRuntime !== "Deno" || x !== "tsx",
       ),
   },
   {
