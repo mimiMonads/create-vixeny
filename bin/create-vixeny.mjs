@@ -187,7 +187,7 @@ const frontend = async (ob) => {
         packageJson.dependencies = {
           ...packageJson.dependencies,
           vixeny: "^0.1.49",
-          "vixeny-perspective": "^0.1.44",
+          "vixeny-perspective": "0.1.50",
           esbuild: "^0.20.1",
         };
 
@@ -283,7 +283,7 @@ if (!("test" in flags) && !(flags.test)) {
   if ("frontend" in flags) {
     const templates = template.map((x) => x.value);
 
-    await fronted(
+    await frontend(
       new Promise(
         (res) =>
           res({

@@ -1,5 +1,5 @@
 import { jsxStaticServer } from "vixeny-perspective";
-import { petitions, plugins, vixeny } from "vixeny";
+import { petitions, plugins } from "vixeny";
 import process from "node:process";
 import * as Dom from "react-dom/server";
 import * as React from "react";
@@ -10,6 +10,7 @@ export default jsxStaticServer({
   petitions,
   plugins,
   options: {
-    root: process.cwd(),
+    //@ts-ignore
+    root: typeof Deno !== "undefined" ? "file://" + Deno.cwd() : process.cwd(),
   },
 });
