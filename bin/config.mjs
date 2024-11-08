@@ -9,29 +9,15 @@ export const colors = {
   R: `\x1b[0m`,
 };
 
-const name = () =>
-  //@ts-ignore
-  typeof Bun !== "undefined"
-    ? "Bun"
-    //@ts-ignore
-    : typeof Bun !== "undefined"
-    ? "Deno"
-    : "Node";
-export const currentRuntime = name() === "Bun" ? "Bun" : "Deno";
-
 export const template = [
-  { name: "tsx", value: "tsx" },
+  // { name: "tsx", value: "tsx" },
   { name: "jsx", value: "jsx" },
   { name: "ejs", value: "ejs" },
   { name: "pug", value: "pug" },
   { name: "postcss", value: "postcss" },
   { name: "sass", value: "sass" },
   { name: "remark", value: "remark" },
-]
-  // Have tp fix tsx for Deno
-  .filter(
-    (x) => (currentRuntime !== "Deno" || x.value !== "tsx"),
-  );
+];
 
 export let __filename = "";
 
@@ -47,6 +33,12 @@ try {
 export const __dirname = path.dirname(__filename);
 
 const repeatedQuestions = [
+  {
+    type: "list",
+    name: "rt",
+    message: "Which runtime?",
+    choices: ["Bun", "Deno"],
+  },
   {
     type: "checkbox",
     name: "plugins",
@@ -77,7 +69,7 @@ export const questionForMain = [
     type: "list",
     name: "main",
     message: "Welcome to Vixeny!, what kind of template do you need?",
-    choices: ["with fronted", "just backend"],
+    choices: ["with frontned", "just backend"],
   },
 ];
 
@@ -90,12 +82,8 @@ export const questionsForTemplate = [
       "pug",
       "ejs",
       "jsx",
-      "tsx",
-    ]
-      .filter(
-        // Fix later for Deno
-        (x) => currentRuntime !== "Deno" || x !== "tsx",
-      ),
+      //"tsx",
+    ],
   },
   {
     type: "list",

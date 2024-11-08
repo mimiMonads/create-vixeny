@@ -1,4 +1,3 @@
-import { exec } from "node:child_process";
 import { colors } from "./config.mjs";
 
 export const terminalSpace = () => console.log("");
@@ -21,18 +20,6 @@ export const goodByeMessage = (runtime, currPath, projectName) => {
   console.log(`${colors.B}# Have fun building with Vixeny!${colors.R}`);
   terminalSpace();
 };
-
-export function checkPackageManager(packageManager) {
-  return new Promise((resolve) => {
-    exec(`${packageManager} -v`, (error, stdout, stderr) => {
-      if (error) {
-        resolve(null); // Package manager not found
-      } else {
-        resolve(packageManager); // Return the version number
-      }
-    });
-  });
-}
 
 export const listOfImports = (arr) =>
   arr.reduce((acc, v) =>

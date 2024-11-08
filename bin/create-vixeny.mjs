@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import inquirer from "inquirer";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,7 +6,6 @@ import { goodByeMessage, listOfImports, terminalSpace } from "./utils.mjs";
 import {
   __dirname,
   __filename,
-  currentRuntime,
   questionForMain,
   questionsForBackendTemplate,
   questionsForTemplate,
@@ -49,11 +47,7 @@ const flags = argumentsUsed();
 
 const onlyBackend = async () => {
   inquirer.prompt(questionsForBackendTemplate).then((answers) => {
-    // Your previous answers handling here
-    if (!packageManager) {
-      console.error("Can't find Bun or Deno package manager.");
-      return;
-    }
+    const currentRuntime = answers.rt;
 
     let projectName = answers.projectName;
     const currPath = path.basename(process.cwd());
@@ -135,8 +129,9 @@ const onlyBackend = async () => {
   });
 };
 
-const fronted = async (ob) => {
+const frontend = async (ob) => {
   (ob ?? inquirer.prompt(questionsForTemplate)).then((answers) => {
+    const currentRuntime = answers.rt;
     // Your previous answers handling here
     let projectName = answers.projectName;
 
@@ -280,7 +275,7 @@ if (!("test" in flags) && !(flags.test)) {
   inquirer
     .prompt(questionForMain)
     .then((answers) =>
-      answers.main === "with fronted" ? fronted() : onlyBackend()
+      answers.main === "with frontned" ? frontend() : onlyBackend()
     );
 } else {
   // Testing purpose
@@ -296,6 +291,7 @@ if (!("test" in flags) && !(flags.test)) {
             projectName: "dest",
             installationChoice: "tsx",
             style: "vanilla",
+            rt: flags.rt,
             plugins: [],
           }),
       ),
