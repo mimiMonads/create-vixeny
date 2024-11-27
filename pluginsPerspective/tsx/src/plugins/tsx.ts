@@ -1,16 +1,35 @@
-import * as Dom from "react-dom/server";
+import * as ReactDOMServer from "react-dom/server";
 import * as React from "react";
-import * as esbuild from "esbuild";
-import { tsxStaticServer } from "vixeny-perspective";
-import { petitions, plugins } from "vixeny";
+import { tsxStaticServerPlugin, tsxToPetition } from "vixeny-perspective";
+import { petitions, plugins, runtime } from "vixeny";
 
-export default tsxStaticServer({
-  Dom,
-  React,
-  esbuild,
-  plugins,
+const currentRt = runtime.name();
+
+const root = currentRt == "Deno"
+  //@ts-ignore
+  ? "file://" + Deno.cwd()
+  : process.cwd();
+
+const plugin = tsxToPetition({
   petitions,
+  React,
+  ReactDOMServer,
+  plugins,
+  root,
+});
+
+const petition = plugin()({
+  headings: {
+    headers: ".html",
+  },
+  f: ({ defaultTSX }) => defaultTSX,
+});
+
+export default tsxStaticServerPlugin({
+  plugins,
   options: {
     preserveExtension: false,
+    petition,
+    root,
   },
 });

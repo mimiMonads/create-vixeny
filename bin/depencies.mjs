@@ -46,6 +46,14 @@ export const injectTemplates = {
         "postcss-nested": "6.0.1",
       }
       : dependencies,
+  typescript: (answers, dependencies) =>
+    answers.style === "typescript" ||
+      answers.template?.find((x) => x === "typescript")
+      ? {
+        ...dependencies,
+        "esbuild": "0.20.1",
+      }
+      : dependencies,
   remark: (answers, dependencies) =>
     answers.style === "postcss" ||
       answers.template?.find((x) => x === "postcss")

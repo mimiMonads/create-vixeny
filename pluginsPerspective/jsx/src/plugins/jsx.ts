@@ -1,16 +1,35 @@
-import { jsxStaticServer } from "vixeny-perspective";
-import { petitions, plugins } from "vixeny";
+import { jsxStaticServerPlugin, jsxToPetition } from "vixeny-perspective";
+import { petitions, plugins, runtime } from "vixeny";
 import process from "node:process";
-import * as Dom from "react-dom/server";
 import * as React from "react";
+import * as ReactDOMServer from "react-dom/server";
 
-export default jsxStaticServer({
+const currentRt = runtime.name();
+
+const root = currentRt == "Deno"
+  //@ts-ignore
+  ? "file://" + Deno.cwd()
+  : process.cwd();
+
+const plugin = jsxToPetition({
+  ReactDOMServer,
   React,
-  Dom,
+  root,
   petitions,
   plugins,
+});
+
+const petition = plugin()({
+  headings: {
+    headers: ".html",
+  },
+  f: ({ defaultJSX }) => defaultJSX,
+});
+
+export default jsxStaticServerPlugin({
+  plugins,
   options: {
-    //@ts-ignore
-    root: typeof Deno !== "undefined" ? "file://" + Deno.cwd() : process.cwd(),
+    root,
+    petition,
   },
 });

@@ -82,7 +82,7 @@ export const questionsForTemplate = [
       "pug",
       "ejs",
       "jsx",
-      //"tsx",
+      "tsx",
     ],
   },
   {

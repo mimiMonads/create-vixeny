@@ -15,7 +15,8 @@ import {
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
-const currentVixenyVersion = "0.1.52", currentVixenyPerspectiveVersion = "0.4.0"
+const currentVixenyVersion = "0.1.52",
+  currentVixenyPerspectiveVersion = "0.4.0";
 
 terminalSpace();
 console.log(
@@ -220,7 +221,6 @@ const frontend = async (ob) => {
         [
           answers.installationChoice,
           answers.style,
-          "typescript",
           ...(answers?.template ?? []),
         ].filter((x) => x !== "vanilla"),
       ),
