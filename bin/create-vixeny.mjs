@@ -15,6 +15,8 @@ import {
 import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
+const currentVixenyVersion = "0.1.52", currentVixenyPerspectiveVersion = "0.4.0"
+
 terminalSpace();
 console.log(
   "\x1b[31m%s\x1b[0m" + // Red for V
@@ -94,7 +96,7 @@ const onlyBackend = async () => {
     if (answers.answers !== "Deno") {
       packageJson.dependencies = {
         ...packageJson.dependencies,
-        vixeny: "0.1.49",
+        vixeny: currentVixenyVersion,
       };
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
@@ -187,9 +189,8 @@ const frontend = async (ob) => {
       if (answers.answers !== "Deno") {
         packageJson.dependencies = {
           ...packageJson.dependencies,
-          vixeny: "^0.1.49",
-          "vixeny-perspective": "0.1.50",
-          esbuild: "^0.20.1",
+          vixeny: currentVixenyVersion,
+          "vixeny-perspective": currentVixenyPerspectiveVersion,
         };
 
         packageJson.dependencies = toReduceDep(

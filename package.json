@@ -1,6 +1,6 @@
 {
   "name": "create-vixeny",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "templates for Vixeny",
   "main": "main.ts",
   "repository": {
@@ -23,9 +23,9 @@
   },
   "homepage": "https://github.com/mimiMonads/create-vixeny#readme",
   "devDependencies": {
-    "vixeny": "0.1.49",
-    "vixeny-plugins": "0.1.0",
-    "vixeny-perspective": "0.1.50",
+    "vixeny": "0.1.52",
+    "vixeny-plugins": "0.1.1",
+    "vixeny-perspective": "0.4.0",
     "@types/bun": "latest"
   },
   "dependencies": {
