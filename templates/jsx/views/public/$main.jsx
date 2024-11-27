@@ -35,16 +35,6 @@ const MainPage = () => (
             <code>./views/public/$main.html</code> is found here.
           </li>
         </ul>
-        <p>Additionally, we have one active plugin:</p>
-        <ul>
-          <li>
-            <strong>esbuild:</strong>{" "}
-            This plugin converts all TypeScript files in{" "}
-            <code>views/public</code>{" "}
-            (.ts) to ECMAScript Modules (.mjs). You can find an example at{" "}
-            <code>/views/public/mjs/main.ts</code>.
-          </li>
-        </ul>
         <blockquote>
           Remember, Vixeny does not use a <code>dist</code>{" "}
           folder; everything is composed on-the-fly. For example, a file named

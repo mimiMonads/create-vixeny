@@ -16,7 +16,8 @@ import { copyTemplateFiles, replaceOptionsAndImports } from "./io.mjs";
 import { injectPlugins, injectTemplates, toReduceDep } from "./depencies.mjs";
 
 const currentVixenyVersion = "0.1.52",
-  currentVixenyPerspectiveVersion = "0.4.0";
+  currentVixenyPerspectiveVersion = "0.4.0",
+  currentVixentPlugins = "0.1.1";
 
 terminalSpace();
 console.log(
@@ -51,7 +52,9 @@ const flags = argumentsUsed();
 
 const onlyBackend = async () => {
   inquirer.prompt(questionsForBackendTemplate).then((answers) => {
-    const currentRuntime = answers.rt;
+
+    // Ensuring that the runtime is lowercase
+    const currentRuntime = answers.rt.toLowerCase();
 
     let projectName = answers.projectName;
     const currPath = path.basename(process.cwd());
@@ -101,10 +104,16 @@ const onlyBackend = async () => {
       };
       packageJson.devDependencies = {
         ...packageJson.devDependencies,
-        chokidar: "^3.6.0",
+        chokidar: "3.6.0",
         "bun-types": "^1.0.2",
       };
 
+      if(answers?.plugins !== null && answers?.plugins.length > 0) {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          'vixeny-plugins': currentVixentPlugins,
+        };
+      }
       // injecting dependecies
       packageJson.dependencies = toReduceDep(
         answers,
@@ -124,7 +133,7 @@ const onlyBackend = async () => {
       );
     }
 
-    copyTemplateFiles("onlyBackend/" + currentRuntime, projectPath);
+    copyTemplateFiles("onlyBackend/" + currentRuntime.toLowerCase(), projectPath);
     answers?.plugins.forEach((plugin) =>
       copyTemplateFiles("plugins/" + plugin + "/", projectPath)
     );
@@ -135,7 +144,9 @@ const onlyBackend = async () => {
 
 const frontend = async (ob) => {
   (ob ?? inquirer.prompt(questionsForTemplate)).then((answers) => {
-    const currentRuntime = answers.rt;
+
+    // Ensuring lowercase
+    const currentRuntime = answers.rt.toLowerCase();
     // Your previous answers handling here
     let projectName = answers.projectName;
 
@@ -172,6 +183,13 @@ const frontend = async (ob) => {
         },
       };
 
+      if(answers?.plugins !== null && answers?.plugins.length > 0) {
+        packageJson.dependencies = {
+          ...packageJson.dependencies,
+          'vixeny-plugins': currentVixentPlugins,
+        };
+      }
+      
       packageJson.scripts = {
         ...packageJson.scripts,
         start:

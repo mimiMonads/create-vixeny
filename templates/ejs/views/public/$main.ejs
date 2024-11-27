@@ -20,12 +20,7 @@
                 <li><strong>Dynamic Server (<code>src</code>):</strong> This is where all the route functions are located.</li>
                 <li><strong>Static Server (<code>views</code>):</strong> This hosts all static files. Specifically, the <code>views/public</code> directory will serve as the home for these files, which users can access. For instance, the file <code>./views/public/$main.html</code> is found here.</li>
             </ul>
-            <p>Additionally, we have one active plugin:</p>
-            <ul>
-                <li><strong>esbuild:</strong> This plugin converts all TypeScript files in <code>views/public</code> (.ts) to ECMAScript Modules (.mjs). You can find an example at <code>/views/public/mjs/main.ts</code>.</li>
-            </ul>
-            <blockquote>Remember, Vixeny does not use a <code>dist</code> folder; everything is composed on-the-fly. For example, a file named <code>example.md</code> will be resolved as <code>example.html</code> and accessed as <code>example</code>.</blockquote>
-        </section>
+            </section>
         <section>
             <p>
               For more information, visit the 
