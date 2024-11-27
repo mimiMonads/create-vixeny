@@ -52,7 +52,6 @@ const flags = argumentsUsed();
 
 const onlyBackend = async () => {
   inquirer.prompt(questionsForBackendTemplate).then((answers) => {
-
     // Ensuring that the runtime is lowercase
     const currentRuntime = answers.rt.toLowerCase();
 
@@ -108,10 +107,10 @@ const onlyBackend = async () => {
         "bun-types": "^1.0.2",
       };
 
-      if(answers?.plugins !== null && answers?.plugins.length > 0) {
+      if (answers?.plugins !== null && answers?.plugins.length > 0) {
         packageJson.dependencies = {
           ...packageJson.dependencies,
-          'vixeny-plugins': currentVixentPlugins,
+          "vixeny-plugins": currentVixentPlugins,
         };
       }
       // injecting dependecies
@@ -133,7 +132,10 @@ const onlyBackend = async () => {
       );
     }
 
-    copyTemplateFiles("onlyBackend/" + currentRuntime.toLowerCase(), projectPath);
+    copyTemplateFiles(
+      "onlyBackend/" + currentRuntime.toLowerCase(),
+      projectPath,
+    );
     answers?.plugins.forEach((plugin) =>
       copyTemplateFiles("plugins/" + plugin + "/", projectPath)
     );
@@ -144,7 +146,6 @@ const onlyBackend = async () => {
 
 const frontend = async (ob) => {
   (ob ?? inquirer.prompt(questionsForTemplate)).then((answers) => {
-
     // Ensuring lowercase
     const currentRuntime = answers.rt.toLowerCase();
     // Your previous answers handling here
@@ -183,13 +184,13 @@ const frontend = async (ob) => {
         },
       };
 
-      if(answers?.plugins !== null && answers?.plugins.length > 0) {
+      if (answers?.plugins !== null && answers?.plugins.length > 0) {
         packageJson.dependencies = {
           ...packageJson.dependencies,
-          'vixeny-plugins': currentVixentPlugins,
+          "vixeny-plugins": currentVixentPlugins,
         };
       }
-      
+
       packageJson.scripts = {
         ...packageJson.scripts,
         start:
@@ -248,7 +249,7 @@ const frontend = async (ob) => {
       "templates/" + answers.installationChoice,
       projectPath,
     );
-    copyTemplateFiles("rt/" + currentRuntime.toLowerCase(), projectPath);
+    copyTemplateFiles("rt/" + currentRuntime, projectPath);
     copyTemplateFiles("css/" + answers.style, projectPath);
     copyTemplateFiles("src/", projectPath);
     listOfTemplates.forEach((template) =>
@@ -287,7 +288,7 @@ const fileServer = plugins.fileServer({
 });`,
     );
 
-    goodByeMessage(currentRuntime.toString(), currPath, projectName);
+    goodByeMessage(currentRuntime, currPath, projectName);
   });
 };
 

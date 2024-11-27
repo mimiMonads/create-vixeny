@@ -1,6 +1,6 @@
 import { sassStaticServer } from "vixeny-perspective";
 import * as sass from "sass";
-import { petitions, plugins, vixeny } from "vixeny";
+import { petitions, plugins } from "vixeny";
 
 export default sassStaticServer({
   sass,
